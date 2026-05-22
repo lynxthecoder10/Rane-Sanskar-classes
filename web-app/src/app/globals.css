@@ -2,14 +2,17 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #212121;
-  --brand-primary: #ff3115;
-  --brand-primary-hover: #e41f05;
-  --brand-secondary: #92278f;
-  --brand-accent: #00bcd4;
-  --brand-dark: #212121;
-  --brand-gray: #505050;
-  --brand-light: #f0f0f0;
+  --foreground: #0f172a; /* Premium deep slate instead of harsh pure black */
+  
+  /* Premium variants of original brand colors */
+  --brand-primary: #dc2626; /* Refined, elegant scarlet red instead of raw #ff3115 */
+  --brand-primary-hover: #b91c1c; /* Deep rich crimson red for hover state */
+  --brand-secondary: #7c3aed; /* Modern, luxurious violet/purple instead of flat magenta #92278f */
+  --brand-accent: #0ea5e9; /* Sleek sky blue/cyan instead of raw #00bcd4 */
+  --brand-dark: #0f172a; /* Deep slate dark background */
+  --brand-gray: #475569; /* Balanced slate gray for text */
+  --brand-light: #f8fafc; /* Beautiful soft slate-50 light background instead of flat grey #f0f0f0 */
+  --brand-light-hover: #f1f5f9; /* Subtle border/hover background */
 }
 
 @theme inline {
@@ -22,14 +25,19 @@
   --color-brand-dark: var(--brand-dark);
   --color-brand-gray: var(--brand-gray);
   --color-brand-light: var(--brand-light);
+  --color-brand-light-hover: var(--brand-light-hover);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #121212;
-    --foreground: #f9fafb;
+    --background: #090d16; /* Sophisticated deep midnight-blue/black */
+    --foreground: #f8fafc;
+    --brand-dark: #090d16;
+    --brand-light: #1e293b;
+    --brand-light-hover: #334155;
+    --brand-gray: #94a3b8;
   }
 }
 
