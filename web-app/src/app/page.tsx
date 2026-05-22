@@ -6,6 +6,8 @@ import DirectorMessage from '@/components/DirectorMessage';
 import WhyUs from '@/components/WhyUs';
 import AdmissionSection from '@/components/AdmissionSection';
 import Footer from '@/components/Footer';
+import FacultyShowcase from '@/components/FacultyShowcase';
+import Testimonials from '@/components/Testimonials';
 
 export default function Home() {
   return (
@@ -16,6 +18,8 @@ export default function Home() {
       <Services />
       <DirectorMessage />
       <WhyUs />
+      <FacultyShowcase />
+      <Testimonials />
       <AdmissionSection />
       <Footer />
     </main>
