@@ -66,8 +66,11 @@ export default function Footer() {
         {/* Copyright */}
         <div className="border-t border-white/10 pt-8 text-center text-gray-500 text-sm flex flex-col md:flex-row justify-between items-center">
           <p>© {new Date().getFullYear()} Rane's Sanskar Classes. All Rights Reserved.</p>
-          <div className="mt-4 md:mt-0 space-x-4">
-            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+          <div className="mt-4 md:mt-0 space-x-4 flex items-center justify-center flex-wrap">
+            <a href="https://ranessanskarclasses.classpro.in/people/2619689/events" target="_blank" rel="noopener noreferrer" className="hover:text-white font-bold text-gray-300 transition-colors mr-4">
+              Student Portal ↗
+            </a>
+            <Link href="/privacy" className="hover:text-white transition-colors mr-4">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-white transition-colors">Terms of Service</Link>
           </div>
         </div>

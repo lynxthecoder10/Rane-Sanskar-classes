@@ -7,9 +7,34 @@ export default async function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-black text-brand-dark mb-2">Welcome back!</h1>
-        <p className="text-brand-gray text-lg">Here's an overview of your academic progress.</p>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-3xl font-black text-brand-dark mb-2">Welcome back!</h1>
+          <p className="text-brand-gray text-lg">Here's an overview of your academic progress.</p>
+        </div>
+      </div>
+
+      {/* Classpro Student Portal CTA */}
+      <div className="bg-gradient-to-r from-brand-primary to-orange-500 rounded-3xl p-8 text-white shadow-xl flex flex-col lg:flex-row justify-between items-center gap-6 relative overflow-hidden group">
+        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
+        <div className="relative z-10 text-center lg:text-left">
+          <span className="bg-white/20 text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">
+            Associated Portal
+          </span>
+          <h2 className="text-2xl md:text-3xl font-black mb-2">Classpro Student Portal</h2>
+          <p className="text-white/95 max-w-xl font-medium text-sm md:text-base">
+            Check your personalized lecture events, test schedules, batch timings, and live notifications directly on the official Classpro portal.
+          </p>
+        </div>
+        <a
+          href="https://ranessanskarclasses.classpro.in/people/2619689/events"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="bg-white text-brand-primary hover:bg-brand-light hover:-translate-y-0.5 font-black px-8 py-4 rounded-full shadow-lg transition-all flex-shrink-0 text-center w-full lg:w-auto relative z-10 flex items-center justify-center gap-2"
+        >
+          <span>Go to Classpro Events</span>
+          <span className="text-lg">↗</span>
+        </a>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

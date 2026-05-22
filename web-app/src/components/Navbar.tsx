@@ -22,7 +22,11 @@ export default function Navbar() {
         <div className="container mx-auto px-4 flex justify-between items-center">
           <div>📍 Santacruz (W), Mumbai — Admissions Open 2026–27</div>
           <div className="flex items-center space-x-4">
-            <Link href="/login" className="hover:text-brand-light transition-colors font-medium">Student Login</Link>
+            <a href="https://ranessanskarclasses.classpro.in/people/2619689/events" target="_blank" rel="noopener noreferrer" className="hover:text-brand-light transition-colors font-semibold flex items-center gap-1">
+              🎓 Student Portal (Classpro) ↗
+            </a>
+            <span className="text-white/30">|</span>
+            <Link href="/login" className="hover:text-brand-light transition-colors font-medium">Admin & Staff Login</Link>
           </div>
         </div>
       </div>
@@ -81,7 +85,15 @@ export default function Navbar() {
             </Link>
           ))}
           <div className="pt-4 flex flex-col gap-3">
-            <a href="tel:+917021272046" className="flex items-center gap-2 text-brand-dark font-semibold">
+            <a
+              href="https://ranessanskarclasses.classpro.in/people/2619689/events"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="border-2 border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white text-center py-3 rounded-full font-bold transition-colors flex items-center justify-center gap-2"
+            >
+              🎓 Student Portal (Classpro) ↗
+            </a>
+            <a href="tel:+917021272046" className="flex items-center gap-2 text-brand-dark font-semibold py-1">
               <Phone className="w-4 h-4 text-brand-primary" /> +91 70212 72046
             </a>
             <Link
