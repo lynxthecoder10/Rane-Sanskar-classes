@@ -49,6 +49,7 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      suppressHydrationWarning
     >
       <head>
         <script
@@ -56,7 +57,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}<FloatingWhatsApp /></body>
+      <body className="min-h-full flex flex-col" suppressHydrationWarning>{children}<FloatingWhatsApp /></body>
     </html>
   );
 }
