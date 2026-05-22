@@ -1,0 +1,15 @@
+# Ignore agents configuration and security scans
+.agents/
+.codex-security-scans/
+skills-lock.json
+
+# Web app folder has its own .gitignore, but ignore its build outputs here too
+web-app/node_modules/
+web-app/.next/
+web-app/.env*
+web-app/coverage/
+web-app/build/
+web-app/.vercel/
+web-app/dist/
+*.pem
+.DS_Store
