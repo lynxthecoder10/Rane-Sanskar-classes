@@ -1,48 +1,44 @@
 @import "tailwindcss";
 
+/* Premium Logo Refinements */
 :root {
-  --background: #ffffff;
-  --foreground: #0f172a; /* Premium deep slate instead of harsh pure black */
-  
-  /* Premium variants of original brand colors */
-  --brand-primary: #dc2626; /* Refined, elegant scarlet red instead of raw #ff3115 */
-  --brand-primary-hover: #b91c1c; /* Deep rich crimson red for hover state */
-  --brand-secondary: #7c3aed; /* Modern, luxurious violet/purple instead of flat magenta #92278f */
-  --brand-accent: #0ea5e9; /* Sleek sky blue/cyan instead of raw #00bcd4 */
-  --brand-dark: #0f172a; /* Deep slate dark background */
-  --brand-gray: #475569; /* Balanced slate gray for text */
-  --brand-light: #f8fafc; /* Beautiful soft slate-50 light background instead of flat grey #f0f0f0 */
-  --brand-light-hover: #f1f5f9; /* Subtle border/hover background */
+  --brand-red: #c21e17;
+  --brand-red-hover: #a01510;
+  --brand-blue: #0f172a;
+  --font-playfair: 'Playfair Display', serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-brand-primary: var(--brand-primary);
-  --color-brand-primary-hover: var(--brand-primary-hover);
-  --color-brand-secondary: var(--brand-secondary);
-  --color-brand-accent: var(--brand-accent);
-  --color-brand-dark: var(--brand-dark);
-  --color-brand-gray: var(--brand-gray);
-  --color-brand-light: var(--brand-light);
-  --color-brand-light-hover: var(--brand-light-hover);
-  --font-sans: var(--font-inter);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #090d16; /* Sophisticated deep midnight-blue/black */
-    --foreground: #f8fafc;
-    --brand-dark: #090d16;
-    --brand-light: #1e293b;
-    --brand-light-hover: #334155;
-    --brand-gray: #94a3b8;
-  }
-}
-
+/* Base Styles */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  background-color: #fdfdfc;
+  color: var(--brand-blue);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  scroll-behavior: smooth;
 }
+
+/* Luxury Card Utility using the Soft Canvas and Red Accent Borders */
+.premium-panel {
+  background-color: #ffffff;
+  border: 1px solid rgba(15, 23, 42, 0.04);
+  border-radius: 20px;
+  padding: 2.5rem;
+  box-shadow: 0 4px 30px rgba(15, 23, 42, 0.015);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.premium-panel:hover {
+  transform: translateY(-6px);
+  border-color: rgba(194, 30, 23, 0.15);
+  box-shadow: 0 20px 40px rgba(194, 30, 23, 0.04);
+}
+
+/* Elegant Sun‑Gold Aura Effect for Topper/Achievement Sections */
+.radiant-gold-bg {
+  background: radial-gradient(circle at top, rgba(234, 179, 8, 0.07) 0%, rgba(253, 253, 252, 0) 70%);
+}
+
+/* Fast‑compiled Utility Overrides */
+.bg-brand-red { background-color: var(--brand-red); }
+.bg-brand-red:hover { background-color: var(--brand-red-hover); }
+.text-brand-red { color: var(--brand-red); }
+.text-brand-blue { color: var(--brand-blue); }

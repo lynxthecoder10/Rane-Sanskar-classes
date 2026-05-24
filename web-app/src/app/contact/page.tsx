@@ -60,7 +60,7 @@ export default function ContactPage() {
                       <div className="font-semibold text-brand-dark">Address</div>
                       <div className="text-brand-gray text-sm leading-relaxed">
                         Rane&apos;s Sanskar Classes,<br />
-                        Santacruz (W), Mumbai – 400054
+                        Santacruz (E), Mumbai – 400055
                       </div>
                     </div>
                   </div>
@@ -100,7 +100,7 @@ export default function ContactPage() {
               <div className="text-center text-brand-gray">
                 <MapPin className="w-10 h-10 mx-auto mb-2 text-brand-primary" />
                 <p className="font-semibold">Rane&apos;s Sanskar Classes</p>
-                <p className="text-sm">Santacruz (W), Mumbai – 400054</p>
+                <p className="text-sm">Santacruz (E), Mumbai – 400055</p>
                 <a
                   href="https://maps.google.com/?q=Rane+Sanskar+Classes+Santacruz+Mumbai"
                   target="_blank"

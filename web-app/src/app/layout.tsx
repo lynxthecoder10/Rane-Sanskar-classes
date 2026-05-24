@@ -1,26 +1,31 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/Navbar";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
 
-const inter = Inter({
-  variable: "--font-inter",
+// Prestigious Header Font
+const playfair = Playfair_Display({ 
   subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap",
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+// Modern UI & Body Font
+const jakarta = Plus_Jakarta_Sans({ 
   subsets: ["latin"],
+  variable: "--font-jakarta",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "Rane's Sanskar Classes | Best Coaching in Santacruz, Mumbai",
-  description: "29+ years of excellence. Premier coaching classes in Santacruz, Mumbai for SSC, ICSE, CBSE, Commerce & Science. Small batches, expert teachers, proven results. Enquire now!",
+  title: "Rane's Sanskar Classes | 29+ Years of Academic Excellence",
+  description: "Premier coaching for SSC, ICSE, CBSE, Science, Commerce, and CA Foundation in Santacruz, Mumbai.",
   keywords: "coaching classes santacruz, tuition mumbai, SSC coaching, ICSE tuition, 10th coaching mumbai, science commerce tuition",
   manifest: "/manifest.json",
   openGraph: {
-    title: "Rane's Sanskar Classes | Best Coaching in Santacruz, Mumbai",
-    description: "29+ years of excellence. Trusted by 5000+ families in Mumbai. Enquire for admissions today.",
+    title: "Rane's Sanskar Classes | 29+ Years of Academic Excellence",
+    description: "Premier coaching for SSC, ICSE, CBSE, Science, Commerce, and CA Foundation in Santacruz, Mumbai.",
     type: "website",
     locale: "en_IN",
   },
@@ -46,18 +51,20 @@ export default function RootLayout({
   };
 
   return (
-    <html
-      lang="en"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
-      suppressHydrationWarning
-    >
+    <html lang="en" className={`${playfair.variable} ${jakarta.variable} h-full antialiased`} suppressHydrationWarning>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="min-h-full flex flex-col" suppressHydrationWarning>{children}<FloatingWhatsApp /></body>
+      <body className={`${jakarta.className} min-h-full flex flex-col bg-[#fcfbf9] text-[#0a0a0c]`} suppressHydrationWarning>
+        <Navbar />
+        <main className="flex-grow min-h-screen pt-20">
+          {children}
+        </main>
+        <FloatingWhatsApp />
+      </body>
     </html>
   );
 }

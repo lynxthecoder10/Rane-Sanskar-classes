@@ -1,109 +1,97 @@
-'use client';
+"use client";
+import { useState } from "react";
 
-import { useState } from 'react';
-import { Award, Trophy, Star } from 'lucide-react';
-
-// Mock data matching the old site's performance
-const resultsData = {
-  ssc: [
-    { name: 'Student 1', marks: '98/100', percentage: '96.40%', image: 'https://i.pravatar.cc/150?img=1' },
-    { name: 'Student 2', marks: '98/100', percentage: '95.20%', image: 'https://i.pravatar.cc/150?img=2' },
-    { name: 'Student 3', marks: '98/100', percentage: '94.80%', image: 'https://i.pravatar.cc/150?img=3' },
-    { name: 'Student 4', marks: '97/100', percentage: '93.00%', image: 'https://i.pravatar.cc/150?img=4' },
-    { name: 'Student 5', marks: '96/100', percentage: '92.50%', image: 'https://i.pravatar.cc/150?img=5' },
-  ],
-  syjc: [
-    { name: 'Commerce Topper 1', marks: '99/100', percentage: '95.50%', image: 'https://i.pravatar.cc/150?img=6' },
-    { name: 'Commerce Topper 2', marks: '99/100', percentage: '94.00%', image: 'https://i.pravatar.cc/150?img=7' },
-    { name: 'Commerce Topper 3', marks: '98/100', percentage: '93.20%', image: 'https://i.pravatar.cc/150?img=8' },
-    { name: 'Commerce Topper 4', marks: '97/100', percentage: '92.80%', image: 'https://i.pravatar.cc/150?img=9' },
-  ],
-  tybcom: [
-    { name: 'TYBCOM Topper 1', marks: '-', percentage: '91.50%', image: 'https://i.pravatar.cc/150?img=10' },
-    { name: 'TYBCOM Topper 2', marks: '-', percentage: '90.00%', image: 'https://i.pravatar.cc/150?img=11' },
-    { name: 'TYBCOM Topper 3', marks: '-', percentage: '88.50%', image: 'https://i.pravatar.cc/150?img=12' },
-  ]
+type Topper = {
+  rank: number;
+  name: string;
+  score: string;
+  subtext: string;
+  category: "ssc" | "syjc" | "tybcom";
 };
 
+const TOPPERS_DATA: Topper[] = [
+  // SSC
+  { rank: 1, name: "Pratham Shah", score: "96.40%", subtext: "SSC 2025 - Science Topper", category: "ssc" },
+  { rank: 2, name: "Ananya Shetty", score: "95.20%", subtext: "SSC 2025", category: "ssc" },
+  { rank: 3, name: "Rohan Mishra", score: "94.80%", subtext: "SSC 2025", category: "ssc" },
+  // SYJC
+  { rank: 1, name: "Neha Deshmukh", score: "95.00%", subtext: "Commerce Subject Topper - 99/100 BK", category: "syjc" },
+  { rank: 2, name: "Aryan Joshi", score: "94.00%", subtext: "SYJC Commerce", category: "syjc" },
+  { rank: 3, name: "Siddhi Patel", score: "93.00%", subtext: "SYJC Commerce", category: "syjc" },
+  // TYBCOM
+  { rank: 1, name: "Mansi Patil", score: "91.50%", subtext: "TYBCOM University Topper", category: "tybcom" },
+];
+
 export default function ToppersGallery() {
-  const [activeTab, setActiveTab] = useState<'ssc' | 'syjc' | 'tybcom'>('syjc');
+  const [activeTab, setActiveTab] = useState("ssc" as "ssc" | "syjc" | "tybcom");
+
+  const filtered = TOPPERS_DATA.filter((t) => t.category === activeTab);
+  const podium = filtered.filter((t) => t.rank <= 3).sort((a, b) => a.rank - b.rank);
 
   return (
-    <section className="py-20 bg-gradient-to-br from-brand-dark to-gray-900 relative overflow-hidden">
-      {/* Decorative Background */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-primary/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-secondary/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
-      
-      <div className="container mx-auto px-4 relative z-10">
-        
+    <section id="results" className="py-24 relative overflow-hidden bg-white radiant-gold-bg">
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-yellow-500/20 text-yellow-400 font-bold px-4 py-1.5 rounded-full text-sm mb-4 border border-yellow-500/30">
-            <Trophy className="w-4 h-4" />
-            Hall of Fame 2025
-          </div>
-          <h2 className="text-3xl md:text-5xl font-black text-white mb-4 tracking-tight">
-            Our Outstanding Results
+        <div className="text-center max-w-3xl mx-auto mb-16">
+          <span className="text-xs font-bold text-[#ff3115] tracking-widest uppercase bg-red-50 px-4 py-1.5 rounded-full">
+            Celebrating Excellence
+          </span>
+          <h2 className="text-4xl md:text-5xl font-black text-slate-900 tracking-tight mt-4 mb-6">
+            Our Outstanding Academic Toppers
           </h2>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-            Consistency meets hard work. Witness the remarkable achievements of our students across all major boards and university exams.
+          <p className="text-slate-600 font-medium">
+            Consistently delivering exceptional results across boards and streams for over 29 years.
           </p>
         </div>
 
         {/* Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-12">
-          <button 
-            onClick={() => setActiveTab('ssc')}
-            className={`px-6 py-3 rounded-full font-bold text-sm transition-all ${activeTab === 'ssc' ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30' : 'bg-white/10 text-gray-300 hover:bg-white/20'}`}
-          >
-            SSC Toppers
-          </button>
-          <button 
-            onClick={() => setActiveTab('syjc')}
-            className={`px-6 py-3 rounded-full font-bold text-sm transition-all ${activeTab === 'syjc' ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30' : 'bg-white/10 text-gray-300 hover:bg-white/20'}`}
-          >
-            SYJC Commerce Toppers
-          </button>
-          <button 
-            onClick={() => setActiveTab('tybcom')}
-            className={`px-6 py-3 rounded-full font-bold text-sm transition-all ${activeTab === 'tybcom' ? 'bg-brand-primary text-white shadow-lg shadow-brand-primary/30' : 'bg-white/10 text-gray-300 hover:bg-white/20'}`}
-          >
-            TYBCOM Toppers
-          </button>
+        <div className="flex justify-center mb-16">
+          <div className="bg-slate-100/80 p-1.5 rounded-full flex gap-2 backdrop-blur-sm">
+            {(["ssc", "syjc", "tybcom"] as const).map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`px-8 py-3 rounded-full text-sm font-bold uppercase tracking-wider transition-all duration-300 ${
+                  activeTab === tab
+                    ? "bg-[#ff3115] text-white shadow-md shadow-red-500/20"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                {tab === "ssc" ? "SSC Toppers" : tab === "syjc" ? "SYJC Commerce" : "TYBCOM"}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Cards Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-6 max-w-6xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-500" key={activeTab}>
-          {resultsData[activeTab].map((student, index) => (
-            <div key={index} className="bg-white/10 backdrop-blur-md border border-white/20 rounded-3xl p-6 text-center hover:-translate-y-2 transition-all hover:shadow-2xl hover:bg-white/15 group relative overflow-hidden">
-              
-              {/* Rank Badge */}
-              <div className="absolute -top-1 -right-1 bg-yellow-400 text-yellow-900 w-10 h-10 rounded-bl-xl rounded-tr-3xl flex items-center justify-center font-black shadow-md z-20">
-                #{index + 1}
-              </div>
-
-              {/* Image */}
-              <div className="relative w-24 h-24 mx-auto mb-4">
-                <div className="absolute inset-0 bg-gradient-to-tr from-brand-primary to-yellow-400 rounded-full blur group-hover:blur-md transition-all opacity-50"></div>
-                <img src={student.image} alt={student.name} className="w-full h-full object-cover rounded-full border-2 border-white relative z-10" />
-              </div>
-              
-              <h3 className="font-bold text-white text-lg truncate mb-1">{student.name}</h3>
-              
-              <div className="mt-4 pt-4 border-t border-white/10">
-                <div className="text-3xl font-black text-yellow-400 drop-shadow-md">
-                  {student.percentage}
+        {/* Podium Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-end max-w-5xl mx-auto">
+          {podium.map((topper) => {
+            const isFirst = topper.rank === 1;
+            return (
+              <div key={topper.name} className={`premium-panel p-8 text-center flex flex-col items-center ${isFirst ? "md:scale-105 border-yellow-200 bg-gradient-to-b from-yellow-50/50 to-white md:-translate-y-4" : ""}`}>
+                {/* Rank badge */}
+                <div
+                  className={`w-14 h-14 rounded-full flex items-center justify-center font-black text-lg mb-6 shadow-inner ${
+                    topper.rank === 1
+                      ? "bg-amber-400 text-slate-900"
+                      : topper.rank === 2
+                      ? "bg-slate-300 text-slate-800"
+                      : "bg-amber-600 text-white"
+                  }`}
+                >
+                  #{topper.rank}
                 </div>
-                {student.marks !== '-' && (
-                  <div className="text-xs font-semibold text-gray-300 mt-1 uppercase tracking-wider">
-                    Highest: {student.marks}
-                  </div>
-                )}
+                {/* Avatar placeholder */}
+                <div className="w-24 h-24 min-w-[96px] min-h-[96px] max-w-[96px] max-h-[96px] rounded-full bg-slate-100 flex items-center justify-center overflow-hidden mx-auto mb-4">
+                  <img src="/placeholder.jpg" alt={topper.name} className="w-full h-full object-cover" />
+                </div>
+                <h3 className="text-xl font-bold text-slate-900 mb-1">{topper.name}</h3>
+                <p className="text-sm font-semibold text-slate-500 mb-4">{topper.subtext}</p>
+                <div className="text-3xl font-black text-[#ff3115] tracking-tight">{topper.score}</div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
-
       </div>
     </section>
   );
