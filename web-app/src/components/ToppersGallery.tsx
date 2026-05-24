@@ -29,7 +29,7 @@ export default function ToppersGallery() {
   const podium = filtered.filter((t) => t.rank <= 3).sort((a, b) => a.rank - b.rank);
 
   return (
-    <section id="results" className="py-24 relative overflow-hidden bg-white radiant-gold-bg">
+    <section id="results" className="py-24 relative overflow-hidden dark-brand-section radiant-gold-bg">
       <div className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
