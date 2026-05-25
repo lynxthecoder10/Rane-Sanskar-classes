@@ -17,7 +17,7 @@ export default function Footer() {
               </div>
               <div className="flex flex-col">
                 <span className="font-display font-extrabold text-lg sm:text-xl tracking-tight leading-none text-white">
-                  RANE'S
+                  RANE&apos;S
                 </span>
                 <span className="font-display font-bold text-[10px] tracking-widest leading-none text-brand-primary mt-1">
                   SANSKAR CLASSES

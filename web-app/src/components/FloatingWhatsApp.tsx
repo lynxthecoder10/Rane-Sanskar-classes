@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { MessageSquare } from 'lucide-react';
 
 export default function FloatingWhatsApp() {
   const [show, setShow] = useState(false);
@@ -26,7 +25,7 @@ export default function FloatingWhatsApp() {
       
       {/* Dynamic Hover Tooltip Message */}
       <div className="bg-slate-900 text-white font-sans font-bold text-xs py-2 px-3.5 rounded-2xl shadow-xl border border-white/5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-300 hidden sm:block">
-        Need assistance? Let's chat!
+        Need assistance? Let&apos;s chat!
       </div>
 
       {/* Breathing WhatsApp Floating Action Button */}

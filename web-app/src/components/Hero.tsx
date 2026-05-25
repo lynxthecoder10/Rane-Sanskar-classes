@@ -2,6 +2,13 @@
 
 import Link from 'next/link';
 
+const STREAM_LINKS = [
+  { label: 'XI-XII Commerce', slug: 'xi-xii commerce' },
+  { label: 'SYJC Focus', slug: 'syjc focus' },
+  { label: 'CA Foundation', slug: 'ca foundation' },
+  { label: 'CMA Foundation', slug: 'cma foundation' },
+];
+
 export default function Hero() {
   return (
     <section className="relative w-full bg-[#fdfdfc] py-20 overflow-hidden text-center">
@@ -17,7 +24,7 @@ export default function Hero() {
         {/* Full-bleed Sun-Gold Banner Panel */}
         <div className="w-full bg-gradient-to-r from-[#ffca28] to-[#ff9800] py-4 px-6 shadow-md border-y-4 border-[#0b2545] flex justify-center mb-10">
           <h2 className="text-lg sm:text-xl md:text-2xl font-black text-[#111111] uppercase tracking-wide m-0 text-center">
-            MUMBAI'S NO.1 COACHING CLASSES FOR XI-XII COMMERCE, SYJC & CA/CS FOUNDATION
+            MUMBAI&apos;S NO.1 COACHING CLASSES FOR XI-XII COMMERCE, SYJC & CA/CS FOUNDATION
           </h2>
         </div>
 
@@ -25,27 +32,26 @@ export default function Hero() {
         <div className="flex flex-col sm:flex-row items-center justify-center gap-6 mt-4">
           {/* Stream Buttons */}
           <div className="relative z-10 block pointer-events-auto flex flex-wrap gap-3 justify-center mt-4">
-            {['XI-XII Commerce', 'SYJC Focus', 'CA Foundation', 'CMA Foundation'].map((stream) => (
-              <button
-                key={stream}
+            {STREAM_LINKS.map((stream) => (
+              <Link
+                key={stream.slug}
+                href={`/?stream=${encodeURIComponent(stream.slug)}#enquiry-form`}
                 onClick={(e) => {
-                  e.preventDefault();
                   const element = document.getElementById('enquiry-form');
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                    // Update URL search params cleanly
+                    e.preventDefault();
                     const url = new URL(window.location.href);
-                    url.searchParams.set('stream', stream.toLowerCase());
+                    url.searchParams.set('stream', stream.slug);
+                    url.hash = 'enquiry-form';
                     window.history.pushState({}, '', url.toString());
-                    
-                    // Trigger a custom event or dispatch if EnquiryForm needs immediate re-validation
                     window.dispatchEvent(new Event('popstate'));
+                    element.scrollIntoView({ behavior: 'smooth' });
                   }
                 }}
                 className="cursor-pointer pointer-events-auto z-20 px-4 py-2 bg-[#c21e17] text-white rounded-full transition-all hover:scale-105 inline-block mx-1 hover:bg-[#a01510]"
               >
-                {stream}
-              </button>
+                {stream.label}
+              </Link>
             ))}
           </div>
           <Link 

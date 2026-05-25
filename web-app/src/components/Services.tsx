@@ -1,7 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { School, GraduationCap, Calculator, TrendingUp, Laptop, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
+import Link from 'next/link';
+import { School, GraduationCap, Calculator, TrendingUp, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 
 const categories = [
   { id: 'all', name: 'All Courses' },
@@ -168,7 +169,7 @@ export default function Services() {
                     {/* Course Features */}
                     <div className="space-y-2">
                       <span className="text-[10px] font-sans font-bold text-brand-secondary/65 uppercase tracking-wider block">
-                        What's Included:
+                        What&apos;s Included:
                       </span>
                       <div className="space-y-2">
                         {course.features.map((feat, fIdx) => (
@@ -185,13 +186,13 @@ export default function Services() {
 
                 {/* Card Action CTA */}
                 <div className="mt-8 pt-6 border-t border-slate-50">
-                  <a
+                  <Link
                     href="/#admission"
                     className="w-full bg-slate-50 hover:bg-brand-primary/5 border border-slate-100 hover:border-brand-primary/10 text-brand-secondary hover:text-brand-primary py-3 rounded-2xl font-sans font-bold transition-all duration-300 flex items-center justify-center gap-1.5 text-xs sm:text-sm group/btn"
                   >
                     <span>Enquire for Admissions</span>
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-0.5 transition-transform" />
-                  </a>
+                  </Link>
                 </div>
               </div>
             );

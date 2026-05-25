@@ -38,7 +38,6 @@ async function loadToppers() {
 
 export default async function ToppersGallery() {
   const toppers = await loadToppers();
-  ];
 
   return (
     <section id="results" className="py-24 bg-gradient-to-b from-[#00b4db] to-[#0083b0] border-b-8 border-[#0b2545]">

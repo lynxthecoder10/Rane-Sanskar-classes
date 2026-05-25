@@ -8,8 +8,22 @@ import Footer from '@/components/Footer';
 import FacultyShowcase from '@/components/FacultyShowcase';
 import RankTrackerPreview from '@/components/RankTrackerPreview';
 import Testimonials from '@/components/Testimonials';
+import { normalizeStreamParam, VALID_STANDARDS, type StandardOption } from '@/lib/course-options';
 
-export default function Home() {
+type HomeProps = {
+  searchParams: Promise<{
+    standard?: string;
+    stream?: string;
+  }>;
+};
+
+export default async function Home({ searchParams }: HomeProps) {
+  const params = await searchParams;
+  const initialStandard =
+    params.standard && VALID_STANDARDS.includes(params.standard as StandardOption)
+      ? (params.standard as StandardOption)
+      : normalizeStreamParam(params.stream ?? null) ?? '';
+
   return (
     <>
       <Hero />
@@ -20,7 +34,7 @@ export default function Home() {
       <WhyUs />
       <FacultyShowcase />
       <Testimonials />
-      <AdmissionSection />
+      <AdmissionSection initialStandard={initialStandard} />
       <Footer />
     </>
   );

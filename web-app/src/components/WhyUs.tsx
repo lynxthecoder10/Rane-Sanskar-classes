@@ -1,4 +1,4 @@
-import { Award, Users, BookOpen, UserCheck, FileEdit, Smartphone, Check, HelpCircle, Trophy } from 'lucide-react';
+import { Award, Users, BookOpen, UserCheck, FileEdit, Smartphone, Check, Trophy } from 'lucide-react';
 
 const stats = [
   { icon: Award, value: '29+', label: 'Years of Legacy', text: 'Est. 1997 in Mumbai' },
@@ -77,10 +77,10 @@ export default function WhyUs() {
             <span>The Sanskar Ecosystem</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-brand-secondary tracking-tight">
-            Why Rane's Sanskar Classes Stands Apart
+            Why Rane&apos;s Sanskar Classes Stands Apart
           </h2>
           <p className="text-brand-gray font-sans text-sm sm:text-base leading-relaxed">
-            Education goes beyond reading textbooks. Our decades of success stem from a highly disciplined, nurturing system designed to unlock each student's peak potential.
+            Education goes beyond reading textbooks. Our decades of success stem from a highly disciplined, nurturing system designed to unlock each student&apos;s peak potential.
           </p>
         </div>
 

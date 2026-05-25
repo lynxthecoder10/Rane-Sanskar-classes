@@ -1,11 +1,6 @@
-import { createClient } from '@/utils/supabase/server';
 import { FileText, Download, Filter, Search } from 'lucide-react';
-import Link from 'next/link';
 
 export default async function ResourcesPage() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-
   // In a real app, you would fetch these from a 'resources' table
   // and join with storage URLs. For now, displaying static mock data.
   const resources = [

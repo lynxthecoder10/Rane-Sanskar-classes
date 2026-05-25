@@ -2,11 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { CheckCircle, AlertCircle, User, Phone, Mail, Landmark, BookOpen, Send } from 'lucide-react';
-import { normalizeStreamParam, VALID_BOARDS, VALID_STANDARDS } from '@/lib/course-options';
+import { normalizeStreamParam, VALID_BOARDS, VALID_STANDARDS, type StandardOption } from '@/lib/course-options';
 
 type FormState = 'idle' | 'loading' | 'success' | 'error';
 
-export default function EnquiryForm() {
+type EnquiryFormProps = {
+  initialStandard?: StandardOption | '';
+};
+
+export default function EnquiryForm({ initialStandard = '' }: EnquiryFormProps) {
   const [formState, setFormState] = useState<FormState>('idle');
   const [errorMsg, setErrorMsg] = useState('');
   const [form, setForm] = useState({
@@ -14,7 +18,7 @@ export default function EnquiryForm() {
     parent_name: '',
     phone: '',
     email: '',
-    standard: '',
+    standard: initialStandard,
     board: '',
     message: '',
   });
@@ -25,8 +29,8 @@ export default function EnquiryForm() {
       const params = new URLSearchParams(window.location.search);
       const standardParam = params.get('standard');
       const mappedStandard = normalizeStreamParam(params.get('stream'));
-      const nextStandard = standardParam && VALID_STANDARDS.includes(standardParam as (typeof VALID_STANDARDS)[number])
-        ? standardParam
+      const nextStandard: StandardOption | undefined = standardParam && VALID_STANDARDS.includes(standardParam as StandardOption)
+        ? (standardParam as StandardOption)
         : mappedStandard;
 
       if (nextStandard) {

@@ -1,5 +1,4 @@
 import { default as NextImage } from "next/image";
-import { ChevronDown } from "lucide-react";
 
 export default function DirectorMessage() {
   return (
@@ -49,7 +48,7 @@ export default function DirectorMessage() {
                 Welcome to Rane Sanskar Classes. For nearly three decades, our mission has been singular: to break down complex concepts into crystal-clear milestones and build unshakable academic confidence in every student.
               </p>
               <p className="text-slate-700 font-medium text-base leading-relaxed mb-6">
-                We don't believe in rote learning. We believe in strict personalized tracking, conceptual clarity, and dedicated mentorship. Out of our physical coaching centers right here in Santacruz, Mumbai, we have mentored thousands of alumni to top board rankings and successful professional careers.
+                We don&apos;t believe in rote learning. We believe in strict personalized tracking, conceptual clarity, and dedicated mentorship. Out of our physical coaching centers right here in Santacruz, Mumbai, we have mentored thousands of alumni to top board rankings and successful professional careers.
               </p>
               
               <div className="flex items-center gap-4 mt-8">

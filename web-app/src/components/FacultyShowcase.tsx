@@ -1,4 +1,5 @@
-import { Award, Briefcase, GraduationCap } from 'lucide-react';
+import Image from 'next/image';
+import { Briefcase, GraduationCap } from 'lucide-react';
 
 const facultyMembers = [
   {
@@ -63,12 +64,14 @@ export default function FacultyShowcase() {
             >
               <div>
                 {/* Asymmetric Profile Frame */}
-                <div className="w-24 h-24 min-w-[96px] min-h-[96px] max-w-[96px] max-h-[96px] rounded-2xl overflow-hidden flex items-center justify-center mx-auto mb-6 border-2 border-slate-50 bg-slate-50 group-hover:scale-105 transition-transform duration-300">
+                <div className="relative w-24 h-24 min-w-[96px] min-h-[96px] max-w-[96px] max-h-[96px] rounded-2xl overflow-hidden flex items-center justify-center mx-auto mb-6 border-2 border-slate-50 bg-slate-50 group-hover:scale-105 transition-transform duration-300">
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/10 via-transparent to-transparent z-10" />
-                  <img 
-                    src={member.image} 
-                    alt={member.name} 
-                    className="w-full h-full object-cover" 
+                  <Image
+                    src={member.image}
+                    alt={member.name}
+                    width={96}
+                    height={96}
+                    className="w-full h-full object-cover"
                   />
                 </div>
 

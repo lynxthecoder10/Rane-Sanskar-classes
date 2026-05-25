@@ -135,7 +135,7 @@ export default function CoursesPage() {
         <section className="py-16 bg-brand-primary">
           <div className="container mx-auto px-4 text-center">
             <h2 className="text-3xl font-black text-white mb-4">Not sure which course is right?</h2>
-            <p className="text-white/80 mb-8 text-lg">Talk to us — we'll help you choose the perfect program for your child.</p>
+            <p className="text-white/80 mb-8 text-lg">Talk to us - we&apos;ll help you choose the perfect program for your child.</p>
             <Link href="/#admission" className="bg-white text-brand-primary font-black px-10 py-4 rounded-full text-lg hover:shadow-xl transition-all inline-block">
               Get Free Counselling
             </Link>

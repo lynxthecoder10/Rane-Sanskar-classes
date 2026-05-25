@@ -1,5 +1,4 @@
-import { BookOpen, AlertCircle, FileQuestion, Clock, Award } from 'lucide-react';
-import Link from 'next/link';
+import { AlertCircle, FileQuestion, Clock, Award } from 'lucide-react';
 
 export default function MockTestUI() {
   return (

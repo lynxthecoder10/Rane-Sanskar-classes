@@ -1,7 +1,12 @@
 import EnquiryForm from '@/components/EnquiryForm';
 import { Phone, MapPin, Clock, MessageSquareCode, Sparkles } from 'lucide-react';
+import type { StandardOption } from '@/lib/course-options';
 
-export default function AdmissionSection() {
+type AdmissionSectionProps = {
+  initialStandard?: StandardOption | '';
+};
+
+export default function AdmissionSection({ initialStandard = '' }: AdmissionSectionProps) {
   return (
     <section id="admission" className="py-24 bg-slate-900 text-white relative overflow-hidden">
       {/* Decorative Glowing Organic Gradients */}
@@ -17,7 +22,7 @@ export default function AdmissionSection() {
             <span>Enrollment Open 2026–27</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-white tracking-tight">
-            Secure Your Child's Academic Success
+            Secure Your Child&apos;s Academic Success
           </h2>
           <p className="text-slate-300 font-sans text-sm sm:text-base leading-relaxed">
             Begin the journey towards outstanding achievements today. Submit your inquiry below, and our academic mentors will get in touch with you within 24 hours.
@@ -109,7 +114,7 @@ export default function AdmissionSection() {
               </p>
             </div>
             
-            <EnquiryForm />
+            <EnquiryForm initialStandard={initialStandard} />
           </div>
 
         </div>
