@@ -1,51 +1,90 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { validateEnquiry } from "@/lib/validation";
+import { EnquiryValidationSchema } from "@/lib/schemas";
 
-// Uses Service Role only on the SERVER — never exposed to client
-// This bypasses RLS, so we must validate everything manually before inserting
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+export const runtime = "nodejs";
 
-export async function POST(request: NextRequest) {
+function createSupabaseAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error("Missing Supabase service configuration.");
+  }
+
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
+
+export async function POST(request: Request) {
   try {
-    // 1. Parse body safely
     let body: unknown;
+
     try {
       body = await request.json();
     } catch {
-      return NextResponse.json({ error: "Invalid JSON body." }, { status: 400 });
+      return NextResponse.json({ success: false, error: "Invalid JSON body." }, { status: 400 });
     }
 
-    // 2. Server-side validation — never trust the client
-    const result = validateEnquiry(body);
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 422 });
-    }
+    const validationResult = EnquiryValidationSchema.safeParse(body);
 
-    // 3. Insert clean, validated data only
-    const { error } = await supabaseAdmin
-      .from("enquiries")
-      .insert([result.data]);
-
-    if (error) {
-      console.error("[API] Supabase insert error:", error.message);
+    if (!validationResult.success) {
       return NextResponse.json(
-        { error: "Could not save your enquiry. Please try again." },
+        {
+          success: false,
+          errors: validationResult.error.flatten().fieldErrors,
+        },
+        { status: 422 }
+      );
+    }
+
+    const supabaseAdmin = createSupabaseAdminClient();
+    const sanitizedData = validationResult.data;
+
+    const { data: enquiry, error: dbError } = await supabaseAdmin
+      .from("enquiries")
+      .insert([{ ...sanitizedData, status: "new" }])
+      .select("id")
+      .single();
+
+    if (dbError) {
+      console.error("[API] Supabase insert error:", dbError.message);
+      return NextResponse.json(
+        { success: false, error: "Could not save your enquiry. Please try again." },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true }, { status: 201 });
+    const { error: notificationError } = await supabaseAdmin.from("notification_events").insert([
+      {
+        event_type: "lead.created",
+        payload: {
+          enquiry_id: enquiry.id,
+          student_name: sanitizedData.student_name,
+          phone: sanitizedData.phone,
+          stream: sanitizedData.stream_selected,
+        },
+      },
+    ]);
+
+    if (notificationError) {
+      console.error("[API] Notification event insert error:", notificationError.message);
+    }
+
+    return NextResponse.json({ success: true, enquiry_id: enquiry.id }, { status: 201 });
   } catch (err) {
     console.error("[API] Unexpected error:", err);
-    return NextResponse.json({ error: "Internal server error." }, { status: 500 });
+    return NextResponse.json(
+      { success: false, error: "Internal system processing failure." },
+      { status: 500 }
+    );
   }
 }
 
-// Block all other HTTP methods
 export async function GET() {
-  return NextResponse.json({ error: "Method not allowed." }, { status: 405 });
+  return NextResponse.json({ success: false, error: "Method not allowed." }, { status: 405 });
 }

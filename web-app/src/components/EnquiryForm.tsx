@@ -1,19 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { CheckCircle, AlertCircle, ArrowRight, User, Phone, Mail, Landmark, BookOpen, Send } from 'lucide-react';
-
-const STANDARDS = [
-  'Class VIII (SSC)', 'Class VIII (ICSE)', 
-  'Class IX (SSC)', 'Class IX (ICSE)', 
-  'Class X (SSC)', 'Class X (ICSE)', 
-  'Class XI Commerce', 'Class XI Science', 
-  'Class XII Commerce', 'Class XII Science',
-  'CA Foundation Prep', 'CMA Foundation Prep',
-  'Vocational Computer Courses'
-];
-
-const BOARDS = ['Maharashtra SSC / HSC', 'ICSE / ISC Board', 'CBSE Board', 'University of Mumbai'];
+import { useState, useEffect } from 'react';
+import { CheckCircle, AlertCircle, User, Phone, Mail, Landmark, BookOpen, Send } from 'lucide-react';
+import { normalizeStreamParam, VALID_BOARDS, VALID_STANDARDS } from '@/lib/course-options';
 
 type FormState = 'idle' | 'loading' | 'success' | 'error';
 
@@ -29,6 +18,29 @@ export default function EnquiryForm() {
     board: '',
     message: '',
   });
+
+  // Keep hero chip URL updates and the form dropdown in sync.
+  useEffect(() => {
+    const handleUrlParamSync = () => {
+      const params = new URLSearchParams(window.location.search);
+      const standardParam = params.get('standard');
+      const mappedStandard = normalizeStreamParam(params.get('stream'));
+      const nextStandard = standardParam && VALID_STANDARDS.includes(standardParam as (typeof VALID_STANDARDS)[number])
+        ? standardParam
+        : mappedStandard;
+
+      if (nextStandard) {
+        setForm(prev => ({ ...prev, standard: nextStandard }));
+      }
+    };
+
+    handleUrlParamSync();
+    window.addEventListener('popstate', handleUrlParamSync);
+
+    return () => {
+      window.removeEventListener('popstate', handleUrlParamSync);
+    };
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
@@ -49,7 +61,10 @@ export default function EnquiryForm() {
       const data = await res.json();
 
       if (!res.ok) {
-        setErrorMsg(data.error || 'Something went wrong. Please try again.');
+        const fieldErrors = data.errors
+          ? Object.values(data.errors).flat().filter(Boolean).join(' ')
+          : '';
+        setErrorMsg(fieldErrors || data.error || 'Something went wrong. Please try again.');
         setFormState('error');
         return;
       }
@@ -73,7 +88,7 @@ export default function EnquiryForm() {
             Enquiry Registered Successfully!
           </h3>
           <p className="text-brand-gray font-sans text-sm max-w-md mx-auto leading-relaxed">
-            Thank you for connecting with Rane&apos;s Sanskar Classes. An academic counsellor will call you shortly to schedule your child's free trial demo batch.
+            Thank you for connecting with Rane&apos;s Sanskar Classes. An academic counsellor will call you shortly to schedule your child&apos;s free trial demo batch.
           </p>
         </div>
         <button
@@ -198,7 +213,7 @@ export default function EnquiryForm() {
               className="w-full border border-slate-200 focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/5 rounded-2xl pl-10 pr-8 py-3.5 text-brand-secondary font-sans focus:outline-none transition-all text-sm bg-white cursor-pointer appearance-none"
             >
               <option value="">Select Target Class</option>
-              {STANDARDS.map(s => <option key={s} value={s}>{s}</option>)}
+              {VALID_STANDARDS.map(s => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
         </div>
@@ -219,7 +234,7 @@ export default function EnquiryForm() {
               className="w-full border border-slate-200 focus:border-brand-primary focus:ring-4 focus:ring-brand-primary/5 rounded-2xl pl-10 pr-8 py-3.5 text-brand-secondary font-sans focus:outline-none transition-all text-sm bg-white cursor-pointer appearance-none"
             >
               <option value="">Select Board</option>
-              {BOARDS.map(b => <option key={b} value={b}>{b}</option>)}
+              {VALID_BOARDS.map(b => <option key={b} value={b}>{b}</option>)}
             </select>
           </div>
         </div>

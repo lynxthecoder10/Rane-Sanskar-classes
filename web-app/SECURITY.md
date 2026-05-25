@@ -25,22 +25,23 @@ Configured in `next.config.ts` to prevent standard web vulnerabilities (XSS, Cli
 
 ## 2. API Security & Rate Limiting
 
-### Next.js Middleware Rate Limiting
-- **Enquiry Endpoint Rate Limiting:** Implemented in `src/middleware.ts` for all `/api/enquiry` routes.
+### Next.js Proxy Rate Limiting
+- **Enquiry Endpoint Rate Limiting:** Implemented in `src/proxy.ts` for `/api/enquiry` and `/api/enquire`.
 - **Limit:** Maximum of **5 enquiry submissions per minute per IP address**.
 - **Response:** Responds with an HTTP `429 Too Many Requests` status to block spam/DDoS attempts on forms.
 
 ### Route Protection
-- `/admin/:path*` and `/dashboard/:path*` are fully protected at the middleware layer using Supabase Auth. Unauthenticated traffic is redirected to `/login`.
-- Authenticated users are prevented from visiting `/login` and redirected directly to `/dashboard`.
+- `/admin/:path*` and `/dashboard/:path*` are protected at the Next.js 16 proxy layer using Supabase Auth. Unauthenticated traffic is redirected to `/student-login`.
+- `/admin/:path*` requires a trusted `profiles.role = 'admin'` database role. Non-admin users are redirected to `/dashboard`.
+- Authenticated users are prevented from visiting `/student-login` and redirected to `/admin` or `/dashboard` based on role.
 
 ---
 
 ## 3. Server-Side Data Validation
 
 ### No Trust on Client Input
-All form submissions are validated strictly on the server before entering the database via `src/lib/validation.ts`:
-- **Input Sanitization:** Custom sanitizer strips any HTML/script tags and dangerous characters to block Cross-Site Scripting (XSS).
+All form submissions are validated strictly on the server before entering the database via `src/lib/schemas.ts`:
+- **Input Sanitization:** Zod-backed schemas normalize and sanitize text fields before database writes.
 - **Field Constraints:** String lengths are strictly capped (e.g., student name max 100, message max 1000 characters).
 - **Format Verification:** Indian mobile numbers are verified using regex `/^(\+91[\s-]?)?[6-9]\d{9}$/`. Email formats are strictly validated.
 - **Allowed Lists:** Dropdown fields (standards, boards) are checked against a strict pre-defined array of valid values.
@@ -52,12 +53,16 @@ All form submissions are validated strictly on the server before entering the da
 ### Row Level Security (RLS)
 - **Deny-by-Default:** Every table has Row Level Security (RLS) enabled.
 - **Table: `enquiries`**
-  - **anon (Public):** Only allowed to `INSERT` (submit the admission inquiry). Cannot select, update, or delete.
-  - **authenticated (Admin):** Full access (`ALL`) to select, update, and manage entries.
+  - **anon (Public):** Only allowed to `INSERT` leads with safe default `status = 'new'`. Cannot select, update, or delete.
+  - **authenticated Admin:** Full access is restricted to users whose trusted `profiles.role` is `admin`.
+- **Student Data Isolation:** `profiles`, `study_activity_logs`, `test_results`, and `student_rank_snapshots` allow students to read only their own rows.
+- **Public Results:** `toppers` is public read-only; admin write access is role-gated.
+- **Data API Grants:** The production migration includes explicit grants for Supabase projects where new tables are not automatically exposed to PostgREST/Data API.
 
 ### API Environment Credentials
 - **Server-Side Admin Operations:** The `supabaseAdmin` client is instantiated strictly on the server-side Next.js route using `SUPABASE_SERVICE_ROLE_KEY`.
 - **Pre-execution Validation:** Although using the service role key bypasses RLS on the server, the API route performs the complete validation flow *before* inserting data into the database.
+- **Notification Simulation:** New leads write a `lead.created` row to `notification_events`, allowing WhatsApp/email delivery to be added later without changing the form contract.
 
 ---
 

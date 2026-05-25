@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { BookOpen, LogOut, LayoutDashboard, Settings, User } from 'lucide-react';
-import { logout } from '@/app/login/actions';
+import { logout } from '@/app/student-login/actions';
 import { createClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
@@ -13,7 +13,7 @@ export default async function DashboardLayout({
   const { data: { user } } = await supabase.auth.getUser();
 
   if (!user) {
-    redirect('/login');
+    redirect('/student-login');
   }
 
   return (

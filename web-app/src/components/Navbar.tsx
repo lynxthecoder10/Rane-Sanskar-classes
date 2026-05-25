@@ -1,148 +1,85 @@
-'use client';
-
 import Link from "next/link";
-import { useState, useEffect } from "react";
-import { Menu, X, Phone } from "lucide-react";
-
-const navLinks = [
-  { href: "/#about",        label: "About Us"    },
-  { href: "/#courses",      label: "Courses"     },
-  { href: "/#results",      label: "Results"     },
-  { href: "/#faculty",      label: "Faculty"     },
-  { href: "/#testimonials", label: "Reviews"     },
-];
+import { default as NextImage } from "next/image";
+import { Phone } from "lucide-react";
 
 export default function Navbar() {
-  const [scrolled,    setScrolled]    = useState(false);
-  const [mobileOpen,  setMobileOpen]  = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        scrolled ? "glass-nav py-3 shadow-md" : "bg-white/60 backdrop-blur-sm py-5"
-      }`}
-    >
-      {/* Top info bar — only on desktop */}
-      <div className="hidden md:block bg-[#0f172a] text-white/80 text-xs py-2">
-        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center font-sans">
-          <span>📍 Santacruz (East), Mumbai — <span className="text-[#ff3115] font-bold">Admissions Open 2026–27</span></span>
-          <div className="flex items-center gap-5">
-            <a
-              href="https://ranessanskarclasses.classpro.in/people/2619689/events"
-              target="_blank" rel="noopener noreferrer"
-              className="hover:text-[#ff3115] transition-colors font-semibold"
-            >
-              🎓 Student Portal ↗
-            </a>
-            <span className="opacity-30">|</span>
-            <Link href="/login" className="hover:text-[#ff3115] transition-colors">Admin Login</Link>
-          </div>
+    <header className="w-full bg-white font-sans border-b-4 border-[#c21e17]">
+      {/* Tier 1: Top Black Mini-Bar */}
+      <div className="w-full bg-[#111111] text-white text-xs py-1 px-4 flex justify-between items-center font-medium">
+        <div className="flex items-center gap-2">
+          <span className="text-red-600 text-sm">🏛️</span>
+          <span>Welcome to Ranes Sanskar Classes</span>
         </div>
-      </div>
-
-      {/* Main nav row */}
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
-
-        {/* Brand Logo */}
-        <Link href="/" className="flex items-center gap-2 group">
-          <div className="flex flex-col">
-            <span
-              className="text-2xl font-bold text-[#0f172a] leading-none group-hover:text-[#ff3115] transition-colors duration-300"
-              style={{ fontFamily: "var(--font-playfair), serif" }}
-            >
-              Rane&apos;s Sanskar
-            </span>
-            <span className="text-[10px] font-bold text-slate-500 tracking-widest uppercase mt-0.5 font-sans">
-              Classes · Est. 1997
-            </span>
-          </div>
-        </Link>
-
-        {/* Desktop nav links */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="relative text-sm font-semibold text-slate-600 hover:text-[#ff3115] transition-colors duration-300 group py-1 font-sans"
-            >
-              {link.label}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#ff3115] rounded-full transition-all duration-300 group-hover:w-full" />
-            </Link>
-          ))}
-        </nav>
-
-        {/* Desktop CTAs */}
-        <div className="hidden md:flex items-center gap-4">
-          <a
-            href="tel:+917021272046"
-            className="text-sm font-semibold text-slate-700 hover:text-[#ff3115] transition-colors flex items-center gap-1.5 font-sans"
-          >
-            <Phone className="w-4 h-4 text-[#ff3115]" />
-            +91 70212 72046
-          </a>
-          <Link
-            href="/#admission"
-            className="bg-[#ff3115] hover:bg-[#e41f05] text-white text-sm font-bold py-2.5 px-6 rounded-full shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300 font-sans glow-red-hover"
-          >
-            Book a Demo
+        <div className="flex items-center gap-6">
+          <Link href="/student-login" className="text-[#ff3b00] font-bold hover:underline transition-all">
+            Student Login
           </Link>
-        </div>
-
-        {/* Mobile toggle */}
-        <button
-          className="md:hidden text-slate-800 p-2 hover:bg-slate-100 rounded-xl transition-colors"
-          onClick={() => setMobileOpen(!mobileOpen)}
-          aria-label="Toggle menu"
-        >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </div>
-
-      {/* Mobile dropdown */}
-      {mobileOpen && (
-        <div className="md:hidden bg-white/95 backdrop-blur-lg border-t border-slate-100 px-6 py-6 shadow-xl space-y-2">
-          {navLinks.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMobileOpen(false)}
-              className="flex justify-between items-center py-3 px-4 rounded-2xl hover:bg-slate-50 text-slate-700 font-semibold font-sans text-sm hover:text-[#ff3115] transition-colors"
-            >
-              {link.label}
-              <span className="text-slate-300">→</span>
-            </Link>
-          ))}
-          <div className="pt-4 border-t border-slate-100 space-y-3">
-            <a
-              href="https://ranessanskarclasses.classpro.in/people/2619689/events"
-              target="_blank" rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2 border border-[#ff3115] text-[#ff3115] py-3 rounded-full font-bold text-sm font-sans hover:bg-[#ff3115] hover:text-white transition-all"
-            >
-              🎓 Student Portal ↗
-            </a>
-            <a
-              href="tel:+917021272046"
-              className="flex items-center gap-2 bg-slate-50 border border-slate-100 px-4 py-3 rounded-2xl text-sm font-bold font-sans text-slate-800"
-            >
-              <Phone className="w-4 h-4 text-[#ff3115]" /> +91 70212 72046
-            </a>
-            <Link
-              href="/#admission"
-              onClick={() => setMobileOpen(false)}
-              className="block bg-[#ff3115] hover:bg-[#e41f05] text-white text-center py-3.5 rounded-full font-bold text-sm font-sans transition-colors shadow-md"
-            >
-              Book a Free Demo
-            </Link>
+          <Link href="/careers" className="text-[#ff3b00] font-bold hover:underline transition-all">
+            Careers
+          </Link>
+          {/* Native Inline SVGs for social */}
+          <div className="flex items-center gap-3 border-l border-slate-700 pl-4 ml-2 text-slate-400">
+            <svg className="w-3.5 h-3.5 hover:text-white cursor-pointer fill-current" viewBox="0 0 24 24">
+              <path d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+            </svg>
+            <svg className="w-3.5 h-3.5 hover:text-white cursor-pointer fill-current" viewBox="0 0 24 24">
+              <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
+            </svg>
           </div>
         </div>
-      )}
+      </div>
+
+      {/* Tier 2: Main Identity Core Branding Row */}
+      <div className="max-w-7xl mx-auto px-6 py-2 grid grid-cols-3 items-center">
+        {/* Left Side: Anniversary Emblem Seal */}
+        <div className="flex justify-start">
+          <div className="relative w-24 h-24 bg-amber-600 rounded-xl flex items-center justify-center text-white font-bold text-center text-xs p-1 shadow-md border-2 border-amber-400 bg-gradient-to-b from-amber-700 to-red-800">
+            CELEBRATING 29th ANNIVERSARY
+          </div>
+        </div>
+
+        {/* Center: Main Institutional Logo */}
+        <div className="flex justify-center">
+
+          <Link href="/" className="relative w-[320px] h-[70px] block mx-auto my-4 hover:opacity-90 transition-opacity">
+            <NextImage
+              src="/logo1.png"
+              alt="Ranes Sanskar Classes Logo"
+              fill
+              priority
+              unoptimized
+              className="object-contain object-center"
+            />
+          </Link>
+
+        </div>
+
+        {/* Right Side: Stacking Contact Numbers */}
+        <div className="flex justify-end items-center gap-3">
+          <div className="p-2.5 bg-red-50 rounded-full border border-orange-200 text-[#ff3b00]">
+            <Phone className="w-6 h-6 fill-current" />
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-black text-[#0b2545] tracking-tight">+91 70212 72046</div>
+            <div className="text-sm font-black text-[#0b2545] tracking-tight">+91 93263 45479</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tier 3: Nav links */}
+      <div className="w-full bg-slate-50 border-t border-slate-200 flex justify-between items-center pl-6 font-semibold text-sm">
+        <div className="flex gap-8 text-[#0b2545]">
+          <Link href="/" className="text-[#c21e17] py-3.5 px-1 font-bold">HOME</Link>
+          <Link href="#about" className="hover:text-[#c21e17] py-3.5 transition-all">ABOUT</Link>
+          <Link href="#courses" className="hover:text-[#c21e17] py-3.5 transition-all">COURSES</Link>
+          <Link href="#results" className="hover:text-[#c21e17] py-3.5 transition-all">TEST SERIES</Link>
+          <Link href="#contact" className="hover:text-[#c21e17] py-3.5 transition-all">CONTACT</Link>
+        </div>
+        <Link href="#enquiry" className="bg-[#c21e17] hover:bg-[#a01610] text-white text-xs font-black uppercase tracking-wider py-4 px-8 transition-colors shadow-inner self-stretch flex items-center">
+          Admission Enquiry
+        </Link>
+      </div>
     </header>
   );
 }

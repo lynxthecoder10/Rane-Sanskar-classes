@@ -1,4 +1,5 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a production-oriented Next.js + Supabase application for Rane's Sanskar Classes.
+It includes the public marketing site, secure enquiry capture, Supabase Auth, protected student/admin areas, and database-backed portal metrics.
 
 ## Getting Started
 
@@ -16,9 +17,29 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+For this workspace the active local demo usually runs on [http://localhost:3001](http://localhost:3001).
+Copy `.env.example` to `.env.local` and fill in the Supabase values before testing database-backed flows.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Production Backend Setup
+
+1. Apply the Supabase migrations in `supabase/migrations/`, including `production_schema.sql`.
+2. Confirm the `profiles`, `enquiries`, `toppers`, `study_activity_logs`, `test_results`, `student_rank_snapshots`, and `notification_events` tables exist.
+3. Confirm RLS is enabled and that admin access is tied to `profiles.role = 'admin'`.
+4. Seed or promote at least one admin profile manually in Supabase SQL:
+
+```sql
+update public.profiles
+set role = 'admin'
+where id = '<supabase-auth-user-id>';
+```
+
+5. Run the verification commands:
+
+```bash
+npx.cmd tsc --noEmit
+npm run lint
+npm run build
+```
 
 ## Learn More
 

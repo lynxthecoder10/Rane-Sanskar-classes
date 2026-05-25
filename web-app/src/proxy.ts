@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateSession } from "@/utils/supabase/middleware";
 
-// In-memory rate limiter (works for single-instance; upgrade to Redis/Upstash for multi-instance)
 const rateLimit = new Map<string, { count: number; resetAt: number }>();
 
-const RATE_LIMIT_WINDOW_MS = 60 * 1000; // 1 minute window
-const RATE_LIMIT_MAX = 5; // max 5 enquiry submissions per minute per IP
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT_MAX = 5;
 
 function getRateLimitKey(ip: string, path: string) {
   return `${ip}:${path}`;
@@ -18,40 +17,43 @@ function checkRateLimit(ip: string, path: string): boolean {
 
   if (!entry || now > entry.resetAt) {
     rateLimit.set(key, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return true; // allowed
+    return true;
   }
 
   if (entry.count >= RATE_LIMIT_MAX) {
-    return false; // blocked
+    return false;
   }
 
   entry.count++;
-  return true; // allowed
+  return true;
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Rate limit the enquiry API route
-  if (pathname.startsWith("/api/enquiry")) {
+  if (pathname.startsWith("/api/enquiry") || pathname.startsWith("/api/enquire")) {
     const ip =
       request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
       request.headers.get("x-real-ip") ||
       "unknown";
 
-    const allowed = checkRateLimit(ip, pathname);
-
-    if (!allowed) {
+    if (!checkRateLimit(ip, pathname)) {
       return NextResponse.json(
-        { error: "Too many requests. Please wait a minute before trying again." },
+        { success: false, error: "Too many requests. Please wait a minute before trying again." },
         { status: 429 }
       );
     }
   }
 
-  return await updateSession(request);
+  return updateSession(request);
 }
 
 export const config = {
-  matcher: ["/api/enquiry/:path*", "/admin/:path*", "/dashboard/:path*"],
+  matcher: [
+    "/api/enquiry/:path*",
+    "/api/enquire/:path*",
+    "/admin/:path*",
+    "/dashboard/:path*",
+    "/student-login",
+  ],
 };

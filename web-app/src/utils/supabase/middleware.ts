@@ -34,17 +34,34 @@ export async function updateSession(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  // Protect admin and dashboard routes
+  // Protect student and admin application zones before route rendering.
   if (!user && (pathname.startsWith('/dashboard') || pathname.startsWith('/admin'))) {
     const url = request.nextUrl.clone()
-    url.pathname = '/login'
+    url.pathname = '/student-login'
     return NextResponse.redirect(url)
   }
 
-  // Redirect authenticated users away from login
-  if (user && pathname.startsWith('/login')) {
+  if (!user) {
+    return supabaseResponse
+  }
+
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', user.id)
+    .single()
+
+  const isAdmin = profile?.role === 'admin'
+
+  if (pathname.startsWith('/admin') && !isAdmin) {
     const url = request.nextUrl.clone()
     url.pathname = '/dashboard'
+    return NextResponse.redirect(url)
+  }
+
+  if (pathname.startsWith('/student-login')) {
+    const url = request.nextUrl.clone()
+    url.pathname = isAdmin ? '/admin' : '/dashboard'
     return NextResponse.redirect(url)
   }
 

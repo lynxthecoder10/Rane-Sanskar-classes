@@ -23,6 +23,11 @@ export const metadata: Metadata = {
   description: "Premier coaching for SSC, ICSE, CBSE, Science, Commerce, and CA Foundation in Santacruz, Mumbai.",
   keywords: "coaching classes santacruz, tuition mumbai, SSC coaching, ICSE tuition, 10th coaching mumbai, science commerce tuition",
   manifest: "/manifest.json",
+  icons: {
+    icon: "/favico.png",
+    shortcut: "/favico.png",
+    apple: "/favico.png",
+  },
   openGraph: {
     title: "Rane's Sanskar Classes | 29+ Years of Academic Excellence",
     description: "Premier coaching for SSC, ICSE, CBSE, Science, Commerce, and CA Foundation in Santacruz, Mumbai.",

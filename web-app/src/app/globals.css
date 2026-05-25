@@ -4,14 +4,27 @@
 :root {
   --brand-red: #c21e17;
   --brand-red-hover: #a01510;
-  --brand-blue: #0f172a;
+  --brand-blue: #0b2545;
   --font-playfair: 'Playfair Display', serif;
+  --gold-start: #fef08a;
+  --gold-end: #facc15;
+  --canvas-bg: #fdfdfc;
+  --brand-navy: #0b2545;
+  --brand-crimson: #c21e17;
+  --academic-gold-gradient: linear-gradient(180deg, #ffca28 0%, #ff9800 100%);
+  --sky-topper-gradient: linear-gradient(180deg, #00b4db 0%, #0083b0 100%);
+  --subject-orange-gradient: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  text-transform: uppercase;
+  line-height: 1.3;
 }
 
 /* Base Styles */
 body {
-  background-color: #fdfdfc;
-  color: var(--brand-blue);
+  background-color: var(--canvas-bg);
+  color: #1e293b;
   font-family: 'Plus Jakarta Sans', sans-serif;
   scroll-behavior: smooth;
 }
@@ -38,6 +51,22 @@ body {
 }
 
 /* Fast‑compiled Utility Overrides */
+.bg-brand-red { background-color: var(--brand-red); }
+.bg-brand-red:hover { background-color: var(--brand-red-hover); }
+.text-brand-red { color: var(--brand-red); }
+.text-brand-blue { color: var(--brand-blue); }
+/* Gold Gradient Banner */
+.gold-academic-gradient {
+  background: linear-gradient(135deg, var(--gold-start) 0%, var(--gold-end) 100%);
+}
+
+/* Navy Header */
+.blue-academic-header {
+  background-color: var(--brand-blue);
+  color: #ffffff;
+}
+
+/* Utility Overrides */
 .bg-brand-red { background-color: var(--brand-red); }
 .bg-brand-red:hover { background-color: var(--brand-red-hover); }
 .text-brand-red { color: var(--brand-red); }

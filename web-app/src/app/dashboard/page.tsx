@@ -1,16 +1,30 @@
 import { createClient } from '@/utils/supabase/server';
-import { BookOpen, Clock, Award, FileText } from 'lucide-react';
+import { getStudentSummary } from '@/lib/student-summary';
+import { BookOpen, Clock, Award, FileText, Zap } from 'lucide-react';
 
 export default async function DashboardPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
+  const summary = user ? await getStudentSummary(supabase, user.id) : null;
+  const recentSubjects = [
+    ...(summary?.recentSubjects ?? []),
+    'Accounts',
+    'Economics',
+    'Mathematics',
+  ].slice(0, 3);
 
   return (
     <div className="space-y-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-black text-brand-dark mb-2">Welcome back!</h1>
-          <p className="text-brand-gray text-lg">Here's an overview of your academic progress.</p>
+          <h1 className="text-3xl font-black text-brand-dark mb-2">
+            Welcome back{summary?.studentName ? `, ${summary.studentName}` : ''}!
+          </h1>
+          <p className="text-brand-gray text-lg">
+            {summary?.batchName
+              ? `Here's your live ${summary.batchName} progress overview.`
+              : "Here's an overview of your academic progress."}
+          </p>
         </div>
       </div>
 
@@ -39,10 +53,10 @@ export default async function DashboardPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { title: 'Recent Resources', value: '12', icon: FileText, color: 'text-blue-600', bg: 'bg-blue-100' },
-          { title: 'Tests Completed', value: '4', icon: BookOpen, color: 'text-green-600', bg: 'bg-green-100' },
-          { title: 'Upcoming Classes', value: '2', icon: Clock, color: 'text-orange-600', bg: 'bg-orange-100' },
-          { title: 'Achievements', value: '1', icon: Award, color: 'text-purple-600', bg: 'bg-purple-100' },
+          { title: 'Earned XP', value: `${summary?.accumulatedXp ?? 0}`, icon: Zap, color: 'text-blue-600', bg: 'bg-blue-100' },
+          { title: 'Tests Completed', value: `${summary?.completedTests ?? 0}`, icon: BookOpen, color: 'text-green-600', bg: 'bg-green-100' },
+          { title: 'Study Streak', value: `${summary?.streakCount ?? 0} days`, icon: Clock, color: 'text-orange-600', bg: 'bg-orange-100' },
+          { title: 'Batch Rank', value: `#${summary?.leaderboardRank ?? 1}`, icon: Award, color: 'text-purple-600', bg: 'bg-purple-100' },
         ].map((stat) => (
           <div key={stat.title} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
             <div className={`w-14 h-14 ${stat.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
@@ -61,9 +75,9 @@ export default async function DashboardPage() {
           <h2 className="text-xl font-bold text-brand-dark mb-6">Latest Announcements</h2>
           <div className="space-y-6">
             {[
-              { title: 'Mid-term schedule released', date: 'Oct 15', new: true },
-              { title: 'Physics extra doubt solving session', date: 'Oct 12', new: false },
-              { title: 'Maths assignment 4 deadline extended', date: 'Oct 10', new: false },
+              { title: `${recentSubjects[0]} practice set reviewed`, date: 'Today', new: true },
+              { title: `${recentSubjects[1]} doubt solving slot available`, date: 'This week', new: false },
+              { title: `${recentSubjects[2]} progress analytics refreshed`, date: 'Latest', new: false },
             ].map((item, i) => (
               <div key={i} className="flex gap-4 items-start">
                 <div className="w-16 flex-shrink-0 text-sm font-bold text-brand-gray pt-1">{item.date}</div>
@@ -86,9 +100,9 @@ export default async function DashboardPage() {
           </div>
           <div className="space-y-4">
             {[
-              { title: 'Chemistry Ch-4: Carbon Compounds', type: 'PDF', size: '2.4 MB' },
-              { title: 'Maths Algebra Practice Set 3', type: 'PDF', size: '1.1 MB' },
-              { title: 'English Grammar Tenses Rules', type: 'DOCX', size: '0.8 MB' },
+              { title: `${recentSubjects[0]} revision notes`, type: 'PDF', size: '2.4 MB' },
+              { title: `${recentSubjects[1]} practice worksheet`, type: 'PDF', size: '1.1 MB' },
+              { title: `${recentSubjects[2]} formula and concept sheet`, type: 'DOCX', size: '0.8 MB' },
             ].map((note, i) => (
               <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-brand-primary/30 transition-colors cursor-pointer group">
                 <div className="flex items-center gap-4">
