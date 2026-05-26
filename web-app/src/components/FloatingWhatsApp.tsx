@@ -21,7 +21,7 @@ export default function FloatingWhatsApp() {
   if (!show) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3 animate-fade-in group">
+    <div className="fixed bottom-[calc(5.75rem+env(safe-area-inset-bottom))] right-4 z-40 flex items-center gap-3 animate-fade-in group md:bottom-6 md:right-6 md:z-50">
       
       {/* Dynamic Hover Tooltip Message */}
       <div className="bg-slate-900 text-white font-sans font-bold text-xs py-2 px-3.5 rounded-2xl shadow-xl border border-white/5 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 pointer-events-none transition-all duration-300 hidden sm:block">

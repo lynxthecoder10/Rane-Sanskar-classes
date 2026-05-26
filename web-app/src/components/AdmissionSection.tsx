@@ -8,115 +8,100 @@ type AdmissionSectionProps = {
 
 export default function AdmissionSection({ initialStandard = '' }: AdmissionSectionProps) {
   return (
-    <section id="admission" className="py-24 bg-slate-900 text-white relative overflow-hidden">
-      {/* Decorative Glowing Organic Gradients */}
-      <div className="absolute top-0 right-0 -z-5 h-[400px] w-[400px] rounded-full bg-brand-primary/5 blur-3xl" />
-      <div className="absolute bottom-0 left-0 -z-5 h-[450px] w-[450px] rounded-full bg-brand-accent/5 blur-3xl" />
+    <section id="admission" className="relative overflow-hidden bg-[#070b13] py-20 text-white sm:py-24">
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-amber-300/70 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-1.5 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary font-bold px-3.5 py-1.5 rounded-full text-xs uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Enrollment Open 2026–27</span>
+      <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="mx-auto mb-16 max-w-3xl space-y-4 text-center">
+          <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/30 bg-white/10 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-amber-300">
+            <Sparkles className="h-3.5 w-3.5" />
+            <span>Enrollment Open 2026-27</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-display font-extrabold text-white tracking-tight">
+          <h2 className="font-display text-3xl font-extrabold tracking-tight text-white sm:text-4xl">
             Secure Your Child&apos;s Academic Success
           </h2>
-          <p className="text-slate-300 font-sans text-sm sm:text-base leading-relaxed">
+          <p className="font-sans text-sm leading-relaxed text-slate-300 sm:text-base">
             Begin the journey towards outstanding achievements today. Submit your inquiry below, and our academic mentors will get in touch with you within 24 hours.
           </p>
         </div>
 
-        {/* 2-Column Details & Form */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch max-w-6xl mx-auto">
-          
-          {/* Left Column: Premium Contact Info Blocks */}
-          <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
-            <div className="bg-white/5 backdrop-blur-md border border-white/10 rounded-[32px] p-8 sm:p-10 space-y-8 flex-grow">
-              <h3 className="font-display font-bold text-xl sm:text-2xl text-white tracking-wide">
+        <div className="mx-auto grid max-w-6xl grid-cols-1 items-stretch gap-10 lg:grid-cols-12 lg:gap-12">
+          <div className="flex flex-col justify-between space-y-6 lg:col-span-5">
+            <div className="flex-grow space-y-8 rounded-[28px] border border-white/10 bg-white/5 p-8 shadow-[0_18px_44px_rgba(0,0,0,0.18)] backdrop-blur-md sm:p-10">
+              <h3 className="font-display text-xl font-bold tracking-wide text-white sm:text-2xl">
                 Direct Contact Office
               </h3>
-              
+
               <div className="space-y-6">
-                
-                {/* Contact Card: Phone */}
-                <div className="flex items-start gap-4 group">
-                  <div className="bg-brand-primary/10 border border-brand-primary/20 p-3 rounded-2xl flex-shrink-0 transition-colors group-hover:bg-brand-primary/20">
-                    <Phone className="w-5 h-5 text-brand-primary" />
+                <div className="group flex items-start gap-4">
+                  <div className="flex-shrink-0 rounded-2xl border border-brand-primary/20 bg-brand-primary/10 p-3 transition-colors group-hover:bg-brand-primary/20">
+                    <Phone className="h-5 w-5 text-brand-primary" />
                   </div>
                   <div className="space-y-1">
-                    <div className="text-white/80 font-sans font-bold text-xs sm:text-sm uppercase tracking-wide">
+                    <div className="font-sans text-xs font-bold uppercase tracking-wide text-white/80 sm:text-sm">
                       Admissions Desk
                     </div>
-                    <div className="flex flex-col font-sans font-bold text-sm sm:text-base text-white">
-                      <a href="tel:+917021272046" className="hover:text-brand-primary transition-colors">+91 70212 72046</a>
-                      <a href="tel:+919326345479" className="hover:text-brand-primary transition-colors text-white/70 text-xs sm:text-sm font-semibold mt-1">+91 93263 45479</a>
+                    <div className="flex flex-col font-sans text-sm font-bold text-white sm:text-base">
+                      <a href="tel:+917021272046" className="transition-colors hover:text-amber-300">+91 70212 72046</a>
+                      <a href="tel:+919326345479" className="mt-1 text-xs font-semibold text-white/70 transition-colors hover:text-amber-300 sm:text-sm">+91 93263 45479</a>
                     </div>
                   </div>
                 </div>
 
-                {/* Contact Card: Address */}
-                <div className="flex items-start gap-4 group">
-                  <div className="bg-brand-primary/10 border border-brand-primary/20 p-3 rounded-2xl flex-shrink-0 transition-colors group-hover:bg-brand-primary/20">
-                    <MapPin className="w-5 h-5 text-brand-primary" />
+                <div className="group flex items-start gap-4">
+                  <div className="flex-shrink-0 rounded-2xl border border-brand-primary/20 bg-brand-primary/10 p-3 transition-colors group-hover:bg-brand-primary/20">
+                    <MapPin className="h-5 w-5 text-brand-primary" />
                   </div>
                   <div className="space-y-1">
-                    <div className="text-white/80 font-sans font-bold text-xs sm:text-sm uppercase tracking-wide">
+                    <div className="font-sans text-xs font-bold uppercase tracking-wide text-white/80 sm:text-sm">
                       Main Center Address
                     </div>
-                    <address className="font-sans text-sm text-slate-300 not-italic leading-relaxed">
+                    <address className="font-sans text-sm not-italic leading-relaxed text-slate-300">
                       Rane&apos;s Sanskar Classes,<br />
                       Santacruz (East), Mumbai - 400055
                     </address>
                   </div>
                 </div>
 
-                {/* Contact Card: Hours */}
-                <div className="flex items-start gap-4 group">
-                  <div className="bg-brand-primary/10 border border-brand-primary/20 p-3 rounded-2xl flex-shrink-0 transition-colors group-hover:bg-brand-primary/20">
-                    <Clock className="w-5 h-5 text-brand-primary" />
+                <div className="group flex items-start gap-4">
+                  <div className="flex-shrink-0 rounded-2xl border border-brand-primary/20 bg-brand-primary/10 p-3 transition-colors group-hover:bg-brand-primary/20">
+                    <Clock className="h-5 w-5 text-brand-primary" />
                   </div>
                   <div className="space-y-1">
-                    <div className="text-white/80 font-sans font-bold text-xs sm:text-sm uppercase tracking-wide">
+                    <div className="font-sans text-xs font-bold uppercase tracking-wide text-white/80 sm:text-sm">
                       Office Timings
                     </div>
-                    <span className="font-sans text-sm text-slate-300 block">
-                      Monday – Saturday: 9:00 AM – 8:00 PM
+                    <span className="block font-sans text-sm text-slate-300">
+                      Monday - Saturday: 9:00 AM - 8:00 PM
                     </span>
                   </div>
                 </div>
-
               </div>
             </div>
 
-            {/* Premium WhatsApp Button Card */}
             <a
               href="https://wa.me/917021272046?text=Hello%2C%20I%20am%20interested%20in%20admission%20at%20Rane's%20Sanskar%20Classes."
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-center gap-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-sans font-bold py-4.5 px-6 rounded-[24px] transition-all duration-300 shadow-lg shadow-emerald-950/20 hover:shadow-xl hover:shadow-emerald-950/30 text-center text-sm"
+              className="flex items-center justify-center gap-2.5 rounded-[24px] bg-emerald-600 px-6 py-4 text-center font-sans text-sm font-bold text-white shadow-lg shadow-emerald-950/20 transition-all duration-300 hover:bg-emerald-700 hover:shadow-xl hover:shadow-emerald-950/30 active:scale-95"
             >
-              <MessageSquareCode className="w-5 h-5" />
+              <MessageSquareCode className="h-5 w-5" />
               <span>Connect Instant on WhatsApp</span>
             </a>
           </div>
 
-          {/* Right Column: Premium Form Card container */}
-          <div className="lg:col-span-7 bg-white rounded-[32px] p-8 sm:p-10 shadow-2xl text-slate-900 border border-slate-100 flex flex-col justify-center">
-            <div className="space-y-2 mb-8">
-              <h3 className="font-display font-extrabold text-2xl text-brand-secondary tracking-tight">
+          <div className="flex flex-col justify-center rounded-[28px] border border-amber-300/30 bg-white p-6 text-slate-900 shadow-[0_24px_70px_rgba(0,0,0,0.24)] sm:p-10 lg:col-span-7">
+            <div className="mb-8 space-y-2">
+              <h3 className="font-display text-2xl font-extrabold tracking-tight text-brand-secondary">
                 Submit Inquiry Form
               </h3>
-              <p className="text-brand-gray font-sans text-xs sm:text-sm">
+              <p className="font-sans text-xs text-brand-gray sm:text-sm">
                 Provide student details below, and an expert counsellor will review and schedule a free demo session.
               </p>
             </div>
-            
+
             <EnquiryForm initialStandard={initialStandard} />
           </div>
-
         </div>
       </div>
     </section>

@@ -2,18 +2,33 @@
 
 /* Premium Logo Refinements */
 :root {
-  --brand-red: #c21e17;
-  --brand-red-hover: #a01510;
-  --brand-blue: #0b2545;
+  --brand-red: #c52622;
+  --brand-red-hover: #9f1711;
+  --brand-blue: #0a192f;
+  --brand-obsidian: #070b13;
+  --brand-gold: #f5b71b;
+  --brand-gold-deep: #b87405;
   --font-playfair: 'Playfair Display', serif;
   --gold-start: #fef08a;
   --gold-end: #facc15;
-  --canvas-bg: #fdfdfc;
-  --brand-navy: #0b2545;
-  --brand-crimson: #c21e17;
-  --academic-gold-gradient: linear-gradient(180deg, #ffca28 0%, #ff9800 100%);
-  --sky-topper-gradient: linear-gradient(180deg, #00b4db 0%, #0083b0 100%);
-  --subject-orange-gradient: linear-gradient(135deg, #ffb703 0%, #fb8500 100%);
+  --canvas-bg: #fffdf7;
+  --brand-navy: #0a192f;
+  --brand-crimson: #c52622;
+  --academic-gold-gradient: linear-gradient(135deg, #fbbf24 0%, #eab308 48%, #b45309 100%);
+  --sky-topper-gradient: linear-gradient(180deg, #0a192f 0%, #07111f 100%);
+  --subject-orange-gradient: linear-gradient(135deg, #fbbf24 0%, #b45309 100%);
+}
+
+@theme inline {
+  --color-brand-primary: var(--brand-crimson);
+  --color-brand-primary-hover: var(--brand-red-hover);
+  --color-brand-secondary: var(--brand-navy);
+  --color-brand-dark: var(--brand-obsidian);
+  --color-brand-light: #fff7df;
+  --color-brand-gray: #64748b;
+  --color-brand-accent: var(--brand-gold);
+  --font-display: var(--font-playfair);
+  --font-sans: var(--font-jakarta);
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -27,6 +42,12 @@ body {
   color: #1e293b;
   font-family: 'Plus Jakarta Sans', sans-serif;
   scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
 }
 
 /* Luxury Card Utility using the Soft Canvas and Red Accent Borders */
@@ -55,6 +76,75 @@ body {
 .bg-brand-red:hover { background-color: var(--brand-red-hover); }
 .text-brand-red { color: var(--brand-red); }
 .text-brand-blue { color: var(--brand-blue); }
+
+.animate-fade-in {
+  animation: fade-in 0.45s ease-out both;
+}
+
+.animate-shake {
+  animation: shake 0.34s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+.form-focus-pulse {
+  animation: form-focus-pulse 1.6s ease-out both;
+}
+
+.css-valid-check {
+  display: none;
+}
+
+.peer:valid:not(:placeholder-shown) ~ .css-valid-check {
+  display: block;
+}
+
+.brand-gold-gradient {
+  background-image: var(--academic-gold-gradient);
+}
+
+.safe-bottom-nav {
+  padding-bottom: max(env(safe-area-inset-bottom), 0.65rem);
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translateX(-1px);
+  }
+  20%, 80% {
+    transform: translateX(2px);
+  }
+  30%, 50%, 70% {
+    transform: translateX(-4px);
+  }
+  40%, 60% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes form-focus-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(245, 183, 27, 0), 0 0 0 0 rgba(197, 38, 34, 0);
+  }
+  28% {
+    box-shadow: 0 0 0 8px rgba(245, 183, 27, 0.18), 0 24px 60px rgba(245, 183, 27, 0.2);
+  }
+  68% {
+    box-shadow: 0 0 0 14px rgba(197, 38, 34, 0.08), 0 18px 44px rgba(10, 25, 47, 0.12);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(245, 183, 27, 0), 0 0 0 0 rgba(197, 38, 34, 0);
+  }
+}
 /* Gold Gradient Banner */
 .gold-academic-gradient {
   background: linear-gradient(135deg, var(--gold-start) 0%, var(--gold-end) 100%);

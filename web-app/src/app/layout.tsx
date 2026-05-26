@@ -3,6 +3,7 @@ import { Playfair_Display, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import FloatingWhatsApp from "@/components/FloatingWhatsApp";
+import MobileBottomNav from "@/components/MobileBottomNav";
 
 // Prestigious Header Font
 const playfair = Playfair_Display({ 
@@ -63,12 +64,13 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className={`${jakarta.className} min-h-full flex flex-col bg-[#fcfbf9] text-[#0a0a0c]`} suppressHydrationWarning>
+      <body className={`${jakarta.className} min-h-full flex flex-col bg-[#070b13] text-[#0a0a0c]`} suppressHydrationWarning>
         <Navbar />
-        <main className="flex-grow min-h-screen pt-20">
+        <main className="flex-grow min-h-screen pb-[calc(5.25rem+env(safe-area-inset-bottom))] md:pb-0">
           {children}
         </main>
         <FloatingWhatsApp />
+        <MobileBottomNav />
       </body>
     </html>
   );
