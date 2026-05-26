@@ -24,6 +24,7 @@ export default async function ResourcesPage() {
             <input 
               type="text" 
               placeholder="Search resources..." 
+              autoComplete="off"
               className="pl-10 pr-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:border-brand-primary focus:ring-1 focus:ring-brand-primary transition-all w-full md:w-64"
             />
           </div>

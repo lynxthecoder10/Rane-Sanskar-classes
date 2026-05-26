@@ -24,9 +24,20 @@ CREATE TABLE IF NOT EXISTS public.profiles (
   id UUID REFERENCES auth.users ON DELETE CASCADE PRIMARY KEY,
   name TEXT NOT NULL,
   role public.student_role NOT NULL DEFAULT 'student',
+  is_approved BOOLEAN NOT NULL DEFAULT false,
   current_batch TEXT,
   updated_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+
+ALTER TABLE public.profiles ADD COLUMN IF NOT EXISTS is_approved BOOLEAN;
+
+UPDATE public.profiles
+SET is_approved = false
+WHERE is_approved IS NULL;
+
+ALTER TABLE public.profiles
+  ALTER COLUMN is_approved SET DEFAULT false,
+  ALTER COLUMN is_approved SET NOT NULL;
 
 CREATE TABLE IF NOT EXISTS public.enquiries (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -227,11 +238,12 @@ SECURITY DEFINER
 SET search_path = public, pg_temp
 AS $$
 BEGIN
-  INSERT INTO public.profiles (id, name, role, current_batch)
+  INSERT INTO public.profiles (id, name, role, is_approved, current_batch)
   VALUES (
     NEW.id,
     COALESCE(NEW.raw_user_meta_data->>'name', split_part(NEW.email, '@', 1), 'New Student'),
     'student'::public.student_role,
+    false,
     'Unassigned Batch'
   )
   ON CONFLICT (id) DO NOTHING;
@@ -415,13 +427,22 @@ VALUES
 ON CONFLICT (year, stream, rank_position) DO NOTHING;
 
 DROP POLICY IF EXISTS "Allow authenticated users to read study materials" ON storage.objects;
+DROP POLICY IF EXISTS "Allow approved users to read study materials" ON storage.objects;
 DROP POLICY IF EXISTS "Allow admin to manage study materials" ON storage.objects;
 
-CREATE POLICY "Allow authenticated users to read study materials"
+CREATE POLICY "Allow approved users to read study materials"
   ON storage.objects
   FOR SELECT
   TO authenticated
-  USING (bucket_id = 'study_materials');
+  USING (
+    bucket_id = 'study_materials'
+    AND EXISTS (
+      SELECT 1
+      FROM public.profiles
+      WHERE id = auth.uid()
+        AND is_approved = true
+    )
+  );
 
 CREATE POLICY "Allow admins to manage study materials"
   ON storage.objects
@@ -429,3 +450,10 @@ CREATE POLICY "Allow admins to manage study materials"
   TO authenticated
   USING (bucket_id = 'study_materials' AND private.is_admin())
   WITH CHECK (bucket_id = 'study_materials' AND private.is_admin());
+
+DO $$
+BEGIN
+  IF to_regprocedure('public.rls_auto_enable()') IS NOT NULL THEN
+    REVOKE EXECUTE ON FUNCTION public.rls_auto_enable() FROM anon, authenticated, PUBLIC;
+  END IF;
+END $$;

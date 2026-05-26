@@ -16,6 +16,18 @@ export default async function DashboardLayout({
     redirect('/student-login');
   }
 
+  const { data: profile } = await supabase
+    .from('profiles')
+    .select('role, is_approved')
+    .eq('id', user.id)
+    .single();
+
+  const canViewDashboard = profile?.role === 'admin' || profile?.is_approved === true;
+
+  if (!canViewDashboard) {
+    redirect('/pending-approval');
+  }
+
   return (
     <div className="flex min-h-screen bg-gray-50">
       {/* Sidebar */}
