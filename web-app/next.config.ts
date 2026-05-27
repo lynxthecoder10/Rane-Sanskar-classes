@@ -64,6 +64,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  output: "standalone",
   // Prevent exposing server info
   poweredByHeader: false,
 };
