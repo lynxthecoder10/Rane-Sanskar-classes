@@ -1,94 +1,141 @@
-import { AlertCircle, FileQuestion, Clock, Award } from 'lucide-react';
+import { AlertCircle, Award, Clock, FileQuestion, TrendingUp } from 'lucide-react';
+import { createClient } from '@/utils/supabase/server';
+import { formatPortalDate } from '@/lib/portal-content';
 
-export default function MockTestUI() {
+type TestResultRow = {
+  id: string;
+  subject: string;
+  marks_obtained: number;
+  total_marks: number;
+  percentage: number | null;
+  created_at: string;
+};
+
+export default async function MockTestUI() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const { data } = user
+    ? await supabase
+        .from('test_results')
+        .select('id, subject, marks_obtained, total_marks, percentage, created_at')
+        .eq('student_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(5)
+    : { data: [] };
+
+  const results = (data ?? []) as TestResultRow[];
+  const average =
+    results.length > 0
+      ? Math.round(results.reduce((total, result) => total + (result.percentage ?? 0), 0) / results.length)
+      : 0;
+
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div className="space-y-6 text-white">
+      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
         <div>
-          <h1 className="text-3xl font-black text-brand-dark mb-2">Mock Tests</h1>
-          <p className="text-brand-gray">Practice with actual board patterns and get instant analytics.</p>
+          <p className="text-xs font-black uppercase tracking-widest text-[var(--logo-gold)]">Assessment Center</p>
+          <h1 className="mt-2 text-3xl font-black uppercase tracking-tight">Mock Tests</h1>
+          <p className="mt-2 text-sm font-semibold text-slate-300">
+            Practice assignments and published test analytics from your live profile.
+          </p>
         </div>
       </div>
 
-      {/* Notice Alert */}
-      <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex gap-4 items-start">
-        <AlertCircle className="w-6 h-6 text-amber-600 flex-shrink-0" />
+      <div className="flex items-start gap-4 border border-[var(--logo-gold)]/25 bg-[var(--logo-gold)]/10 p-4">
+        <AlertCircle className="h-6 w-6 shrink-0 text-[var(--logo-gold)]" />
         <div>
-          <h3 className="font-bold text-amber-900">Upcoming Live Test: Pre-Board Mathematics</h3>
-          <p className="text-sm text-amber-800 mt-1">Scheduled for October 25th, 2026. Make sure to have a stable internet connection.</p>
+          <h3 className="font-bold text-white">Live assignments only</h3>
+          <p className="mt-1 text-sm font-semibold text-slate-300">
+            Upcoming tests appear here after the academic team publishes them for your batch.
+          </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        {/* Available Tests */}
-        <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-bold text-brand-dark">Available Tests</h2>
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <section className="overflow-hidden border border-white/10 bg-white/[0.05] shadow-xl">
+          <div className="border-b border-white/10 p-6">
+            <h2 className="text-xl font-black uppercase tracking-tight">Available Tests</h2>
           </div>
-          <div className="divide-y divide-gray-100">
-            {[
-              { title: 'Algebra Complete Syllabus Mock', duration: '120 mins', questions: 50, standard: '10th SSC' },
-              { title: 'Science-1 Physics Numericals', duration: '60 mins', questions: 25, standard: '10th SSC' },
-              { title: 'English Grammar Comprehensive', duration: '90 mins', questions: 40, standard: 'All' },
-            ].map((test, i) => (
-              <div key={i} className="p-6 hover:bg-gray-50 transition-colors">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="font-bold text-brand-dark text-lg">{test.title}</h3>
-                    <div className="flex items-center gap-4 mt-2 text-sm text-brand-gray font-medium">
-                      <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {test.duration}</span>
-                      <span className="flex items-center gap-1.5"><FileQuestion className="w-4 h-4" /> {test.questions} Qs</span>
-                      <span className="bg-gray-100 text-brand-dark px-2 py-0.5 rounded-md">{test.standard}</span>
+          <div className="p-6">
+            <div className="flex min-h-48 items-center justify-center border border-dashed border-white/15 bg-white/[0.04]">
+              <div className="text-center">
+                <FileQuestion className="mx-auto mb-3 h-10 w-10 text-[var(--logo-gold)]" />
+                <p className="font-semibold text-slate-300">No active mock test is assigned to this batch right now.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section className="overflow-hidden border border-white/10 bg-white/[0.05] shadow-xl">
+          <div className="flex items-center justify-between gap-4 border-b border-white/10 p-6">
+            <div>
+              <h2 className="text-xl font-black uppercase tracking-tight">Performance Analytics</h2>
+              <p className="mt-1 text-sm font-semibold text-slate-400">Recent published results</p>
+            </div>
+            <div className="text-right">
+              <p className="text-3xl font-black text-[var(--logo-gold)]">{average}%</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">average</p>
+            </div>
+          </div>
+          <div className="p-6">
+            {results.length > 0 ? (
+              <div className="space-y-4">
+                {results.map((result) => (
+                  <div key={result.id} className="flex items-center justify-between gap-4 border border-white/10 bg-[var(--logo-navy)]/70 p-4">
+                    <div>
+                      <p className="font-semibold text-white">{result.subject}</p>
+                      <p className="mt-1 flex items-center gap-2 text-xs font-semibold text-slate-400">
+                        <Clock className="h-3.5 w-3.5" />
+                        {formatPortalDate(result.created_at)}
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <div className={(result.percentage ?? 0) >= 85 ? 'text-xl font-black text-[var(--logo-gold)]' : 'text-xl font-black text-white'}>
+                        {Math.round(result.percentage ?? 0)}%
+                      </div>
+                      <div className="text-xs font-bold text-slate-400">
+                        {result.marks_obtained}/{result.total_marks}
+                      </div>
                     </div>
                   </div>
+                ))}
+              </div>
+            ) : (
+              <div className="flex min-h-48 items-center justify-center border border-dashed border-white/15 bg-white/[0.04]">
+                <div className="text-center">
+                  <Award className="mx-auto mb-3 h-10 w-10 text-slate-500" />
+                  <p className="font-semibold text-slate-300">Complete tests to generate your performance chart.</p>
                 </div>
-                <button className="w-full bg-brand-primary/10 hover:bg-brand-primary text-brand-primary hover:text-white font-bold py-3 rounded-xl transition-all text-sm border border-brand-primary/20">
-                  Start Test Now
-                </button>
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+
+      {results.length > 0 && (
+        <div className="border border-white/10 bg-white/[0.05] p-6 shadow-xl">
+          <div className="mb-5 flex items-center gap-2">
+            <TrendingUp className="h-5 w-5 text-[var(--logo-gold)]" />
+            <h2 className="text-xl font-black uppercase tracking-tight">Recent Result Trend</h2>
+          </div>
+          <div className="grid h-40 grid-cols-2 items-end gap-3 sm:grid-cols-5">
+            {results.slice().reverse().map((result) => (
+              <div key={result.id} className="flex h-full flex-col justify-end gap-2">
+                <div
+                  className="min-h-3 bg-gradient-to-t from-[var(--logo-crimson)] to-[var(--logo-gold)]"
+                  style={{ height: `${Math.max(8, result.percentage ?? 0)}%` }}
+                />
+                <p className="truncate text-center text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                  {result.subject}
+                </p>
               </div>
             ))}
           </div>
         </div>
-
-        {/* Previous Results */}
-        <div className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-100">
-            <h2 className="text-xl font-bold text-brand-dark">Performance Analytics</h2>
-          </div>
-          <div className="p-6">
-            <div className="flex items-center justify-center h-48 bg-gray-50 rounded-2xl border border-dashed border-gray-300 mb-6">
-              <div className="text-center">
-                <Award className="w-10 h-10 text-gray-400 mx-auto mb-2" />
-                <p className="text-brand-gray font-medium">Complete more tests to generate your performance chart.</p>
-              </div>
-            </div>
-
-            <h3 className="font-bold text-brand-dark mb-4">Recent Results</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between items-center p-4 bg-green-50 rounded-xl border border-green-100">
-                <div>
-                  <p className="font-semibold text-green-900">Geometry Chapter 1-3 Review</p>
-                  <p className="text-xs text-green-700 mt-1">Oct 12, 2026</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-xl font-black text-green-700">92%</div>
-                  <div className="text-xs font-bold text-green-600">Grade: A+</div>
-                </div>
-              </div>
-              <div className="flex justify-between items-center p-4 bg-orange-50 rounded-xl border border-orange-100">
-                <div>
-                  <p className="font-semibold text-orange-900">Chemistry Balancing Equations</p>
-                  <p className="text-xs text-orange-700 mt-1">Oct 05, 2026</p>
-                </div>
-                <div className="text-right">
-                  <div className="text-xl font-black text-orange-700">68%</div>
-                  <div className="text-xs font-bold text-orange-600">Grade: C</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      )}
     </div>
   );
 }

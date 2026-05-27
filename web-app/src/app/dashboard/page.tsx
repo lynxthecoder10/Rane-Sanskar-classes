@@ -1,124 +1,296 @@
+import Link from 'next/link';
+import type { SupabaseClient } from '@supabase/supabase-js';
 import { createClient } from '@/utils/supabase/server';
-import { getStudentSummary } from '@/lib/student-summary';
-import { BookOpen, Clock, Award, FileText, Zap } from 'lucide-react';
+import { getStudentSummary, type StudentSummary } from '@/lib/student-summary';
+import { formatPortalDate, getClassVideos, getStudyMaterials } from '@/lib/portal-content';
+import {
+  Award,
+  BookOpen,
+  CalendarDays,
+  Clock,
+  Download,
+  ExternalLink,
+  FileText,
+  Flame,
+  PlayCircle,
+  TrendingUp,
+  Zap,
+} from 'lucide-react';
+
+async function loadDashboardSummary(supabase: SupabaseClient, studentId: string) {
+  try {
+    return await getStudentSummary(supabase, studentId);
+  } catch {
+    return null;
+  }
+}
+
+function MetricCard({
+  title,
+  value,
+  icon: Icon,
+  highlight,
+}: {
+  title: string;
+  value: string;
+  icon: typeof Zap;
+  highlight?: boolean;
+}) {
+  return (
+    <div className="border border-white/10 bg-white/[0.05] p-5 shadow-xl">
+      <div className="flex items-center justify-between gap-4">
+        <div>
+          <p className="text-xs font-black uppercase tracking-widest text-slate-400">{title}</p>
+          <p className={highlight ? 'mt-2 text-3xl font-black text-[var(--logo-gold)]' : 'mt-2 text-3xl font-black text-white'}>
+            {value}
+          </p>
+        </div>
+        <div className={highlight ? 'bg-[var(--logo-gold)] text-[var(--logo-navy)]' : 'bg-[var(--logo-navy)] text-slate-300'}>
+          <Icon className="h-12 w-12 p-3" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function PerformanceChart({ summary }: { summary: StudentSummary }) {
+  if (summary.performanceTrend.length === 0) {
+    return (
+      <div className="border border-dashed border-white/15 bg-white/[0.04] p-8 text-center text-sm font-semibold text-slate-400">
+        Test percentage charts will appear after marks are published.
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid h-44 grid-cols-3 items-end gap-3 sm:grid-cols-6">
+      {summary.performanceTrend.map((point) => (
+        <div key={`${point.subject}-${point.createdAt}`} className="flex h-full flex-col justify-end gap-2">
+          <div
+            className="min-h-3 bg-gradient-to-t from-[var(--logo-crimson)] to-[var(--logo-gold)]"
+            style={{ height: `${Math.max(8, point.percentage)}%` }}
+          />
+          <div className="text-center">
+            <p className="text-xs font-black text-white">{point.percentage}%</p>
+            <p className="truncate text-[10px] font-bold uppercase tracking-wider text-slate-500">{point.subject}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ActivityChart({ summary }: { summary: StudentSummary }) {
+  if (summary.activityTrend.length === 0) {
+    return (
+      <div className="border border-dashed border-white/15 bg-white/[0.04] p-8 text-center text-sm font-semibold text-slate-400">
+        Study streak bars will appear after daily activity is logged.
+      </div>
+    );
+  }
+
+  const maxMinutes = Math.max(...summary.activityTrend.map((item) => item.minutesStudied), 1);
+
+  return (
+    <div className="grid h-44 grid-cols-7 items-end gap-2">
+      {summary.activityTrend.map((point) => {
+        const height = Math.max(8, (point.minutesStudied / maxMinutes) * 100);
+        const label = new Intl.DateTimeFormat('en-IN', { weekday: 'short' }).format(new Date(`${point.activityDate}T00:00:00Z`));
+
+        return (
+          <div key={point.activityDate} className="flex h-full flex-col justify-end gap-2">
+            <div
+              className="min-h-3 bg-gradient-to-t from-[var(--logo-navy)] to-[var(--logo-crimson)]"
+              style={{ height: `${height}%` }}
+            />
+            <div className="text-center">
+              <p className="text-xs font-black text-white">{point.minutesStudied}</p>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{label}</p>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export default async function DashboardPage() {
   const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  const summary = user ? await getStudentSummary(supabase, user.id) : null;
-  const recentSubjects = [
-    ...(summary?.recentSubjects ?? []),
-    'Accounts',
-    'Economics',
-    'Mathematics',
-  ].slice(0, 3);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  const summary = user ? await loadDashboardSummary(supabase, user.id) : null;
+  const batchName = summary?.batchName ?? 'Unassigned Batch';
+  const [materials, videos] = summary
+    ? await Promise.all([
+        getStudyMaterials(supabase, batchName, 3),
+        getClassVideos(supabase, batchName, 3),
+      ])
+    : [[], []];
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+    <div className="space-y-8 text-white">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-black text-brand-dark mb-2">
-            Welcome back{summary?.studentName ? `, ${summary.studentName}` : ''}!
+          <p className="text-xs font-black uppercase tracking-widest text-[var(--logo-gold)]">{batchName}</p>
+          <h1 className="mt-2 text-3xl font-black uppercase tracking-tight md:text-4xl">
+            Welcome back{summary?.studentName ? `, ${summary.studentName}` : ''}
           </h1>
-          <p className="text-brand-gray text-lg">
-            {summary?.batchName
-              ? `Here's your live ${summary.batchName} progress overview.`
-              : "Here's an overview of your academic progress."}
+          <p className="mt-2 text-sm font-semibold text-slate-300">
+            Live XP, streak, test performance, and batch content from Supabase.
           </p>
         </div>
       </div>
 
-      {/* Classpro Student Portal CTA */}
-      <div className="bg-gradient-to-r from-brand-primary to-orange-500 rounded-3xl p-8 text-white shadow-xl flex flex-col lg:flex-row justify-between items-center gap-6 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-        <div className="relative z-10 text-center lg:text-left">
-          <span className="bg-white/20 text-white text-xs font-black px-3 py-1 rounded-full uppercase tracking-wider mb-3 inline-block">
-            Associated Portal
-          </span>
-          <h2 className="text-2xl md:text-3xl font-black mb-2">Classpro Student Portal</h2>
-          <p className="text-white/95 max-w-xl font-medium text-sm md:text-base">
-            Check your personalized lecture events, test schedules, batch timings, and live notifications directly on the official Classpro portal.
-          </p>
+      <div className="relative overflow-hidden border border-[var(--logo-crimson)]/40 bg-[linear-gradient(135deg,var(--logo-crimson),#7f1211)] p-6 shadow-2xl md:p-8">
+        <div className="absolute right-0 top-0 h-48 w-48 translate-x-1/3 -translate-y-1/3 rounded-full bg-[var(--logo-gold)]/15 blur-3xl" />
+        <div className="relative z-10 flex flex-col justify-between gap-6 lg:flex-row lg:items-center">
+          <div>
+            <span className="inline-flex items-center gap-2 bg-white/15 px-3 py-1 text-xs font-black uppercase tracking-wider text-white">
+              <CalendarDays className="h-4 w-4" />
+              Associated Portal
+            </span>
+            <h2 className="mt-4 text-2xl font-black uppercase md:text-3xl">ClassPro Student Portal</h2>
+            <p className="mt-2 max-w-2xl text-sm font-semibold leading-6 text-white/90">
+              Check lecture events, test schedules, batch timings, and live notifications on the official ClassPro portal.
+            </p>
+          </div>
+          <a
+            href="https://ranessanskarclasses.classpro.in/people/2619689/events"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 bg-white px-6 py-4 text-sm font-black uppercase tracking-widest text-[var(--logo-crimson)] transition hover:bg-[var(--logo-gold)] hover:text-[var(--logo-navy)]"
+          >
+            Go to ClassPro
+            <ExternalLink className="h-4 w-4" />
+          </a>
         </div>
-        <a
-          href="https://ranessanskarclasses.classpro.in/people/2619689/events"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="bg-white text-brand-primary hover:bg-brand-light hover:-translate-y-0.5 font-black px-8 py-4 rounded-full shadow-lg transition-all flex-shrink-0 text-center w-full lg:w-auto relative z-10 flex items-center justify-center gap-2"
-        >
-          <span>Go to Classpro Events</span>
-          <span className="text-lg">↗</span>
-        </a>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { title: 'Earned XP', value: `${summary?.accumulatedXp ?? 0}`, icon: Zap, color: 'text-blue-600', bg: 'bg-blue-100' },
-          { title: 'Tests Completed', value: `${summary?.completedTests ?? 0}`, icon: BookOpen, color: 'text-green-600', bg: 'bg-green-100' },
-          { title: 'Study Streak', value: `${summary?.streakCount ?? 0} days`, icon: Clock, color: 'text-orange-600', bg: 'bg-orange-100' },
-          { title: 'Batch Rank', value: `#${summary?.leaderboardRank ?? 1}`, icon: Award, color: 'text-purple-600', bg: 'bg-purple-100' },
-        ].map((stat) => (
-          <div key={stat.title} className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
-            <div className={`w-14 h-14 ${stat.bg} rounded-xl flex items-center justify-center flex-shrink-0`}>
-              <stat.icon className={`w-7 h-7 ${stat.color}`} />
-            </div>
+      {summary ? (
+        <>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-5">
+            <MetricCard title="Earned XP" value={summary.accumulatedXp.toLocaleString('en-IN')} icon={Zap} highlight />
+            <MetricCard title="Tests Completed" value={summary.completedTests.toString()} icon={BookOpen} />
+            <MetricCard title="Study Streak" value={`${summary.streakCount} days`} icon={Flame} highlight={summary.streakCount > 0} />
+            <MetricCard title="Batch Rank" value={`#${summary.leaderboardRank}`} icon={Award} highlight />
+            <MetricCard title="Average" value={`${summary.averagePercentage}%`} icon={TrendingUp} highlight={summary.averagePercentage >= 85} />
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+            <section className="border border-white/10 bg-white/[0.05] p-6 shadow-xl">
+              <div className="mb-6 flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-black uppercase tracking-tight">Performance Percentage</h2>
+                  <p className="mt-1 text-sm font-semibold text-slate-400">Recent test result trend</p>
+                </div>
+                <div className="text-3xl font-black text-[var(--logo-gold)]">{summary.averagePercentage}%</div>
+              </div>
+              <PerformanceChart summary={summary} />
+            </section>
+
+            <section className="border border-white/10 bg-white/[0.05] p-6 shadow-xl">
+              <div className="mb-6 flex items-center justify-between gap-4">
+                <div>
+                  <h2 className="text-xl font-black uppercase tracking-tight">Study Activity</h2>
+                  <p className="mt-1 text-sm font-semibold text-slate-400">Last seven logged study days</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-3xl font-black text-[var(--logo-gold)]">{summary.weeklyStudyMinutes}</p>
+                  <p className="text-[10px] font-black uppercase tracking-widest text-slate-500">minutes</p>
+                </div>
+              </div>
+              <ActivityChart summary={summary} />
+            </section>
+          </div>
+        </>
+      ) : (
+        <div className="border border-dashed border-white/15 bg-white/[0.04] p-8 text-center">
+          <Clock className="mx-auto h-10 w-10 text-[var(--logo-gold)]" />
+          <h2 className="mt-4 text-xl font-black uppercase tracking-tight">Portal sync pending</h2>
+          <p className="mx-auto mt-2 max-w-xl text-sm font-semibold leading-6 text-slate-400">
+            Your live metrics will appear when your approved student profile and activity records are available.
+          </p>
+        </div>
+      )}
+
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
+        <section className="border border-white/10 bg-white/[0.05] p-6 shadow-xl">
+          <div className="mb-6 flex items-center justify-between gap-4">
             <div>
-              <div className="text-2xl font-black text-brand-dark">{stat.value}</div>
-              <div className="text-sm font-medium text-brand-gray">{stat.title}</div>
+              <h2 className="text-xl font-black uppercase tracking-tight">Recently Uploaded Notes</h2>
+              <p className="mt-1 text-sm font-semibold text-slate-400">Filtered to your active batch</p>
             </div>
+            <Link href="/dashboard/resources" prefetch className="text-xs font-black uppercase tracking-widest text-[var(--logo-gold)] hover:text-white">
+              View All
+            </Link>
           </div>
-        ))}
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-          <h2 className="text-xl font-bold text-brand-dark mb-6">Latest Announcements</h2>
-          <div className="space-y-6">
-            {[
-              { title: `${recentSubjects[0]} practice set reviewed`, date: 'Today', new: true },
-              { title: `${recentSubjects[1]} doubt solving slot available`, date: 'This week', new: false },
-              { title: `${recentSubjects[2]} progress analytics refreshed`, date: 'Latest', new: false },
-            ].map((item, i) => (
-              <div key={i} className="flex gap-4 items-start">
-                <div className="w-16 flex-shrink-0 text-sm font-bold text-brand-gray pt-1">{item.date}</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="font-semibold text-brand-dark">{item.title}</p>
-                    {item.new && <span className="bg-brand-primary text-white text-[10px] uppercase font-black px-2 py-0.5 rounded-full">New</span>}
+          {materials.length > 0 ? (
+            <div className="space-y-3">
+              {materials.map((material) => (
+                <div key={material.id} className="flex items-center justify-between gap-4 border border-white/10 bg-[var(--logo-navy)]/70 p-4">
+                  <div className="flex min-w-0 items-center gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-[var(--logo-crimson)] text-white">
+                      <FileText className="h-5 w-5" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate font-bold text-white">{material.title}</p>
+                      <p className="text-xs font-semibold text-slate-400">
+                        {material.subject} / {formatPortalDate(material.published_at)}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-sm text-brand-gray mt-1">Please check the resources section for detailed information.</p>
+                  <a href={material.download_url} target="_blank" rel="noopener noreferrer" className="shrink-0 text-slate-400 transition hover:text-[var(--logo-gold)]">
+                    <Download className="h-5 w-5" />
+                  </a>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          ) : (
+            <div className="border border-dashed border-white/15 bg-white/[0.04] p-8 text-center text-sm font-semibold text-slate-400">
+              No published materials for this batch yet.
+            </div>
+          )}
+        </section>
 
-        <div className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-bold text-brand-dark">Recently Uploaded Notes</h2>
-            <button className="text-sm font-bold text-brand-primary hover:underline">View All</button>
+        <section className="border border-white/10 bg-white/[0.05] p-6 shadow-xl">
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <div>
+              <h2 className="text-xl font-black uppercase tracking-tight">Latest Class Videos</h2>
+              <p className="mt-1 text-sm font-semibold text-slate-400">Lecture replays and explanations</p>
+            </div>
+            <Link href="/dashboard/videos" prefetch className="text-xs font-black uppercase tracking-widest text-[var(--logo-gold)] hover:text-white">
+              View All
+            </Link>
           </div>
-          <div className="space-y-4">
-            {[
-              { title: `${recentSubjects[0]} revision notes`, type: 'PDF', size: '2.4 MB' },
-              { title: `${recentSubjects[1]} practice worksheet`, type: 'PDF', size: '1.1 MB' },
-              { title: `${recentSubjects[2]} formula and concept sheet`, type: 'DOCX', size: '0.8 MB' },
-            ].map((note, i) => (
-              <div key={i} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-brand-primary/30 transition-colors cursor-pointer group">
-                <div className="flex items-center gap-4">
-                  <div className="bg-red-100 text-red-600 p-2 rounded-lg">
-                    <FileText className="w-5 h-5" />
+
+          {videos.length > 0 ? (
+            <div className="space-y-3">
+              {videos.map((video) => (
+                <a key={video.id} href={video.video_url} target="_blank" rel="noopener noreferrer" className="flex items-center justify-between gap-4 border border-white/10 bg-[var(--logo-navy)]/70 p-4 transition hover:border-[var(--logo-gold)]/60">
+                  <div className="flex min-w-0 items-center gap-4">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center bg-[var(--logo-gold)] text-[var(--logo-navy)]">
+                      <PlayCircle className="h-5 w-5 fill-current" />
+                    </div>
+                    <div className="min-w-0">
+                      <p className="truncate font-bold text-white">{video.title}</p>
+                      <p className="text-xs font-semibold text-slate-400">
+                        {video.subject} / {formatPortalDate(video.published_at)}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-brand-dark group-hover:text-brand-primary transition-colors">{note.title}</p>
-                    <p className="text-xs text-brand-gray font-medium">{note.type} • {note.size}</p>
-                  </div>
-                </div>
-                <button className="text-brand-gray hover:text-brand-primary font-semibold text-sm">Download</button>
-              </div>
-            ))}
-          </div>
-        </div>
+                  <ExternalLink className="h-5 w-5 shrink-0 text-slate-400" />
+                </a>
+              ))}
+            </div>
+          ) : (
+            <div className="border border-dashed border-white/15 bg-white/[0.04] p-8 text-center text-sm font-semibold text-slate-400">
+              No published class videos for this batch yet.
+            </div>
+          )}
+        </section>
       </div>
     </div>
   );

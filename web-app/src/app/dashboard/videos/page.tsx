@@ -1,8 +1,8 @@
-import MaterialsGridClient from '@/components/dashboard/MaterialsGridClient';
-import { getStudyMaterials } from '@/lib/portal-content';
+import ClassVideosGridClient from '@/components/dashboard/ClassVideosGridClient';
+import { getClassVideos } from '@/lib/portal-content';
 import { createClient } from '@/utils/supabase/server';
 
-export default async function ResourcesPage() {
+export default async function VideosPage() {
   const supabase = await createClient();
   const {
     data: { user },
@@ -13,11 +13,11 @@ export default async function ResourcesPage() {
     : { data: null };
 
   const batchName = profile?.current_batch ?? 'Unassigned Batch';
-  const materials = await getStudyMaterials(supabase, batchName);
+  const videos = await getClassVideos(supabase, batchName);
 
   return (
     <div className="min-h-full bg-[var(--logo-obsidian)] p-4 text-white md:p-8">
-      <MaterialsGridClient materials={materials} batchName={batchName} />
+      <ClassVideosGridClient videos={videos} batchName={batchName} />
     </div>
   );
 }

@@ -42,6 +42,7 @@ export default function Navbar() {
               alt="Ranes Sanskar Classes Logo"
               fill
               priority
+              sizes="(max-width: 640px) 240px, (max-width: 768px) 320px, 320px"
               unoptimized
               className="object-contain object-center"
             />

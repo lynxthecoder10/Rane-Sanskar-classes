@@ -269,7 +269,7 @@ export default function EnquiryForm({ initialStandard = '' }: EnquiryFormProps) 
               required
               minLength={2}
               maxLength={100}
-              autoComplete="name"
+              autoComplete="section-student name"
               value={form.student_name}
               onChange={handleChange}
               onInput={handleInput}
@@ -295,7 +295,7 @@ export default function EnquiryForm({ initialStandard = '' }: EnquiryFormProps) 
               required
               minLength={2}
               maxLength={100}
-              autoComplete="name"
+              autoComplete="section-parent name"
               value={form.parent_name}
               onChange={handleChange}
               onInput={handleInput}
@@ -324,7 +324,7 @@ export default function EnquiryForm({ initialStandard = '' }: EnquiryFormProps) 
               inputMode="tel"
               pattern="[6-9][0-9]{9}"
               maxLength={15}
-              autoComplete="tel"
+              autoComplete="tel-national"
               value={form.phone}
               onChange={handleChange}
               onInput={handleInput}

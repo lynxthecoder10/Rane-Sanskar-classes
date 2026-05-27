@@ -14,6 +14,17 @@ type TestResult = {
   created_at: string;
 };
 
+export type PerformancePoint = {
+  subject: string;
+  percentage: number;
+  createdAt: string;
+};
+
+export type ActivityPoint = {
+  activityDate: string;
+  minutesStudied: number;
+};
+
 export type StudentSummary = {
   studentName: string;
   batchName: string;
@@ -23,6 +34,10 @@ export type StudentSummary = {
   leaderboardRank: number;
   averagePercentage: number;
   recentSubjects: string[];
+  totalStudyMinutes: number;
+  weeklyStudyMinutes: number;
+  performanceTrend: PerformancePoint[];
+  activityTrend: ActivityPoint[];
 };
 
 function startOfUtcDay(date: Date) {
@@ -86,6 +101,7 @@ export async function getStudentSummary(
   }
 
   const testResults = (testRes.data ?? []) as TestResult[];
+  const activityLogs = (logsRes.data ?? []) as ActivityLog[];
   const accumulatedXp = testResults.reduce((total, result) => total + (result.xp_earned ?? 0), 0);
   const averagePercentage =
     testResults.length > 0
@@ -94,15 +110,36 @@ export async function getStudentSummary(
             testResults.length
         )
       : 0;
+  const totalStudyMinutes = activityLogs.reduce(
+    (total, log) => total + (log.minutes_studied ?? 0),
+    0
+  );
+  const weeklyStudyMinutes = activityLogs
+    .slice(0, 7)
+    .reduce((total, log) => total + (log.minutes_studied ?? 0), 0);
 
   return {
     studentName: profileRes.data.name,
     batchName: profileRes.data.current_batch ?? "Unassigned Batch",
-    streakCount: calculateStreak((logsRes.data ?? []) as ActivityLog[]),
+    streakCount: calculateStreak(activityLogs),
     accumulatedXp,
     completedTests: testResults.length,
     leaderboardRank: rankRes.data?.rank_position ?? 1,
     averagePercentage,
     recentSubjects: testResults.slice(0, 3).map((result) => result.subject),
+    totalStudyMinutes,
+    weeklyStudyMinutes,
+    performanceTrend: testResults
+      .slice(0, 6)
+      .reverse()
+      .map((result) => ({
+        subject: result.subject,
+        percentage: Math.round(result.percentage ?? 0),
+        createdAt: result.created_at,
+      })),
+    activityTrend: activityLogs.slice(0, 7).reverse().map((log) => ({
+      activityDate: log.activity_date,
+      minutesStudied: log.minutes_studied ?? 0,
+    })),
   };
 }

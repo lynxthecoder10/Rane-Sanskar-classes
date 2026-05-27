@@ -23,7 +23,7 @@ export default function LoginForm() {
         name="email"
         type="email"
         placeholder="student@example.com"
-        autoComplete="username"
+        autoComplete="email"
         inputMode="email"
         required
       />

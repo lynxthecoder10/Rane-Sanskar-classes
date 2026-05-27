@@ -2,6 +2,13 @@
 
 /* Premium Logo Refinements */
 :root {
+  /* Tokens sampled from public/logo1.png and used as the app color engine. */
+  --logo-obsidian: #070b13;
+  --logo-navy: #0a192f;
+  --logo-crimson: #c52622;
+  --logo-crimson-dark: #9f1711;
+  --logo-gold: #f5b71b;
+  --logo-gold-deep: #b87405;
   --brand-red: #c52622;
   --brand-red-hover: #9f1711;
   --brand-blue: #0a192f;
